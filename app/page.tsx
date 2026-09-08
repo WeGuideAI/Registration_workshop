@@ -1,69 +1,95 @@
-import Image from "next/image";
+import type { Metadata } from 'next'
+import { createClient } from '@/lib/supabase/server'
+import Hero from '@/components/public/Hero'
+import WorkshopHighlights from '@/components/public/WorkshopHighlights'
+import RegistrationSection from '@/components/public/RegistrationSection'
+import Footer from '@/components/public/Footer'
+import type { PublicSlot } from '@/lib/types/workshop'
+import { workshopConfig } from '@/lib/config/workshop'
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: workshopConfig.name,
+  description: workshopConfig.description,
+}
+
+export const revalidate = 30
+
+interface SlotRpcRow {
+  id: string
+  session_title: string
+  session_datetime: string
+  max_capacity: number
+  seats_filled: number
+  seats_remaining: number
+  is_sold_out: boolean
+}
+
+const PREVIEW_SLOTS: PublicSlot[] = [
+  {
+    id: 'e4d29a50-6e3d-4c4f-9e77-9b2f689c1d01',
+    sessionTitle: 'Batch A — Morning Session',
+    sessionDatetime: '2026-09-20T04:00:00.000Z',
+    maxCapacity: 50,
+    seatsFilled: 46,
+    seatsRemaining: 4,
+    isSoldOut: false,
+  },
+  {
+    id: 'f5e30b61-7f4e-5d5a-af88-0c3a790d2e12',
+    sessionTitle: 'Batch B — Afternoon Session',
+    sessionDatetime: '2026-09-20T08:30:00.000Z',
+    maxCapacity: 50,
+    seatsFilled: 38,
+    seatsRemaining: 12,
+    isSoldOut: false,
+  },
+  {
+    id: 'a6f41c72-8a5f-6e6b-b099-1d4b801e3f23',
+    sessionTitle: 'Batch C — Evening Session',
+    sessionDatetime: '2026-09-21T11:30:00.000Z',
+    maxCapacity: 50,
+    seatsFilled: 50,
+    seatsRemaining: 0,
+    isSoldOut: true,
+  },
+]
+
+async function getPublicSlots(): Promise<PublicSlot[]> {
+  try {
+    const supabase = await createClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any).rpc('get_public_slots')
+
+    if (error || !data || data.length === 0) return PREVIEW_SLOTS
+
+    return (data as SlotRpcRow[]).map((s) => ({
+      id:              s.id,
+      sessionTitle:    s.session_title,
+      sessionDatetime: s.session_datetime,
+      maxCapacity:     s.max_capacity,
+      seatsFilled:     Number(s.seats_filled),
+      seatsRemaining:  Number(s.seats_remaining),
+      isSoldOut:       s.is_sold_out,
+    }))
+  } catch {
+    return PREVIEW_SLOTS
+  }
+}
+
+import Navbar from '@/components/public/Navbar'
+
+export default async function LandingPage() {
+  const initialSlots = await getPublicSlots()
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+      <Navbar />
+      <main>
+        <Hero />
+        <WorkshopHighlights />
+        <RegistrationSection initialSlots={initialSlots} />
       </main>
+      <Footer />
     </div>
-  );
+  )
 }
