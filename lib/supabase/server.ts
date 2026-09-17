@@ -4,12 +4,19 @@ import type { Database } from '@/lib/types/database'
 
 function requireEnv(name: string): string {
   const val = process.env[name]
-  if (!val) {
-    return name === 'NEXT_PUBLIC_SUPABASE_URL'
-      ? 'https://placeholder.supabase.co'
-      : 'placeholder-anon-key'
+  if (val) return val
+
+  if (name === 'NEXT_PUBLIC_SUPABASE_ANON_KEY') {
+    const pubKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    if (pubKey) return pubKey
+    return 'placeholder-anon-key'
   }
-  return val
+
+  if (name === 'NEXT_PUBLIC_SUPABASE_URL') {
+    return 'https://placeholder.supabase.co'
+  }
+
+  return 'placeholder-anon-key'
 }
 
 /**
