@@ -5,20 +5,17 @@ import {
   Brain,
   Bot,
   Compass,
-  Lightbulb,
   Radio,
   Sparkles,
-  GraduationCap,
-  Users,
-  Briefcase,
-  Heart,
-  ArrowRight,
   TrendingUp,
   Stethoscope,
   Factory,
   Car,
   Cpu,
   Globe,
+  Check,
+  Zap,
+  ArrowRight,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -30,112 +27,65 @@ interface HighlightCard {
   simplePoints: string[]
 }
 
-interface AudienceItem {
-  icon: LucideIcon
-  label: string
-  desc: string
-}
-
-interface ImpactStat {
-  value: string
-  label: string
-  sub: string
-  color: 'blue' | 'purple' | 'emerald' | 'amber'
-}
-
 interface WhyCard {
   icon: LucideIcon
   sector: string
   title: string
   description: string
-  color: 'blue' | 'purple' | 'emerald' | 'orange'
+  color: 'blue' | 'purple' | 'emerald' | 'cyan'
 }
 
 const aiHighlights: HighlightCard[] = [
   {
     icon: Eye,
-    title: 'How Computers See Things',
+    title: 'Computer Vision in Real Time',
     subtitle: 'Seeing the World',
     description:
-      'Ever wondered how your smartphone unlocks with your face, or how cameras read QR codes? Learn how computers understand shapes, colors, and objects in real time.',
-    simplePoints: ['Face Detection', 'Recognizing Objects', 'Smart Cameras'],
+      'Learn how cameras detect faces, read gestures, and recognize physical objects in milliseconds — the foundational technology behind autonomous robotics.',
+    simplePoints: ['Object Recognition', 'Facial & Gesture Tracking', 'Depth Perception'],
   },
   {
     icon: Brain,
-    title: 'How AI Thinks & Learns',
-    subtitle: 'Learning Like Humans',
+    title: 'How AI Thinks & Decides',
+    subtitle: 'Local Machine Learning',
     description:
-      'Instead of humans writing endless rules, computers can now learn by looking at examples — just like a child learns to recognize a cat or dog.',
-    simplePoints: ['Learning from Examples', 'Spotting Patterns', 'Smart Decisions'],
+      'Discover how neural networks process sensor data to predict safe trajectories and make real-time decisions without human intervention.',
+    simplePoints: ['Pattern Recognition', 'Real-Time Inference', 'Decision Algorithms'],
   },
   {
     icon: Sparkles,
-    title: 'AI in Everyday Life',
-    subtitle: 'Real-World Examples',
+    title: 'Physical AI in Action',
+    subtitle: 'Beyond Screen Chatbots',
     description:
-      'From Google Maps finding the quickest route to voice assistants answering questions, discover how AI is already helping millions of people every day.',
-    simplePoints: ['Smartphones & Apps', 'Voice Assistants', 'Future of Work'],
+      'Understand the massive shift occurring today: AI leaving screen-based chatbots and entering physical drones, robotic arms, and smart machines.',
+    simplePoints: ['Autonomous Systems', 'Industrial Robots', 'Future of Work'],
   },
 ]
 
 const roboticsHighlights: HighlightCard[] = [
   {
     icon: Compass,
-    title: 'The Brain Inside a Robot',
-    subtitle: 'The Tiny Controller',
+    title: 'The Microcontroller Brain',
+    subtitle: 'Embedded Compute',
     description:
-      "Discover the small, affordable computer chips that act as the robot's brain \u2014 receiving information and telling every part what to do next.",
-    simplePoints: ['Small Computer Chips', 'Giving Instructions', 'Connecting Parts'],
+      "Explore the compact microprocessors that govern robotic systems \u2014 routing commands from software logic to physical kinetic power.",
+    simplePoints: ['Microcontrollers', 'Input/Output Buses', 'Motor Direction Logic'],
   },
   {
     icon: Radio,
-    title: 'Robot Eyes, Ears & Touch',
-    subtitle: 'Sensors Explained',
+    title: 'Ultrasonic & Optical Sensors',
+    subtitle: 'Spatial Telemetry',
     description:
-      'How does a robotic vacuum cleaner avoid bumping into a sofa? See how simple sensors measure distance, detect motion, and sense obstacles.',
-    simplePoints: ['Distance Sensors', 'Motion Detectors', 'Avoiding Obstacles'],
+      'How does a robotic vacuum or self-driving cart navigate without collisions? See distance sensors, infrared rays, and acoustic telemetry live.',
+    simplePoints: ['Distance Ranging', 'Obstacle Avoidance', 'Continuous Telemetry'],
   },
   {
     icon: Bot,
-    title: 'Making Machines Move',
-    subtitle: 'Motors & Motion',
+    title: 'Motors, Servos & Movement',
+    subtitle: 'Kinetic Translation',
     description:
-      'See how small electric motors turn computer decisions into physical movement — spinning wheels, moving robotic arms, and steering smoothly.',
-    simplePoints: ['Electric Motors', 'Spinning Wheels', 'Robotic Arms'],
-  },
-]
-
-const audience: AudienceItem[] = [
-  { icon: GraduationCap, label: 'Students & Youth', desc: 'Get inspired about future careers and discover how technology works behind the scenes' },
-  { icon: Users,         label: 'Curious Beginners', desc: 'Anyone interested in understanding what the buzz around AI and robotics is really about' },
-  { icon: Heart,         label: 'Parents & Families', desc: 'Understand the technologies your children are growing up with and talk about' },
-  { icon: Briefcase,     label: 'Working Professionals', desc: 'Learn how automation and AI are shaping modern workplaces and businesses' },
-]
-
-const impactStats: ImpactStat[] = [
-  {
-    value: '97M+',
-    label: 'New AI Jobs by 2025',
-    sub: 'World Economic Forum',
-    color: 'blue',
-  },
-  {
-    value: '$15.7T',
-    label: 'AI Contribution to Global GDP by 2030',
-    sub: 'PwC Report',
-    color: 'purple',
-  },
-  {
-    value: '85%',
-    label: 'of Companies Now Use AI',
-    sub: 'IBM Global AI Report',
-    color: 'emerald',
-  },
-  {
-    value: '3x',
-    label: 'Higher Salary for AI-Skilled Workers',
-    sub: 'LinkedIn Workforce Report',
-    color: 'amber',
+      'Witness how electrical pulses translate into mechanical torque — turning wheels, articulating robotic arms, and maneuvering with precision.',
+    simplePoints: ['Stepper & DC Motors', 'Servo Kinematics', 'Smooth Motion Control'],
   },
 ]
 
@@ -143,79 +93,60 @@ const whyCards: WhyCard[] = [
   {
     icon: Stethoscope,
     sector: 'Healthcare',
-    title: 'AI Saves Lives Daily',
+    title: 'Surgical & Diagnostic AI',
     description:
-      'AI diagnoses cancer in X-rays faster and more accurately than doctors. Robotic surgery makes operations safer, with smaller cuts and faster recovery.',
+      'Precision robotic arms assist surgeons with sub-millimeter accuracy while computer vision algorithms detect anomalies in scans earlier than ever.',
     color: 'blue',
   },
   {
-    icon: GraduationCap,
-    sector: 'Education',
-    title: 'Personalized Learning',
-    description:
-      'AI tutors adapt lessons to each student\'s pace. Schools worldwide use robots to teach programming, science, and creativity — even in rural areas.',
-    color: 'purple',
-  },
-  {
     icon: Factory,
-    sector: 'Manufacturing',
-    title: 'Smart Factories',
+    sector: 'Smart Manufacturing',
+    title: 'Autonomous Production',
     description:
-      'Robots work 24/7 assembling products with zero errors. In India alone, the manufacturing sector is rapidly adopting AI to stay competitive globally.',
-    color: 'orange',
+      'Modern assembly facilities utilize collaborative robots (Cobots) that work safely alongside human operators with zero downtime.',
+    color: 'cyan',
   },
   {
     icon: Car,
-    sector: 'Transport',
-    title: 'Self-Driving Revolution',
+    sector: 'Mobility & Logistics',
+    title: 'Autonomous Navigation',
     description:
-      'AI powers navigation apps, traffic management, and self-driving vehicles. India\'s logistics and delivery sectors are already deploying autonomous bots.',
+      'From warehouse bots to automated delivery fleets, real-time sensor fusion enables vehicles to navigate dynamic traffic safely.',
     color: 'emerald',
   },
   {
     icon: Globe,
     sector: 'Agriculture',
-    title: 'AI-Powered Farming',
+    title: 'AI Precision Farming',
     description:
-      'Drone robots monitor crops, detect diseases early, and optimize water use. Kerala farmers are already using AI to improve yield and reduce waste.',
+      'Autonomous drones and soil sensors monitor crop vitality, target weeds accurately, and minimize water and pesticide usage.',
     color: 'blue',
   },
   {
     icon: Cpu,
     sector: 'Technology Careers',
-    title: 'Tomorrow\'s Hottest Jobs',
+    title: 'Next-Gen High-Demand Roles',
     description:
-      'AI Engineer, Robotics Programmer, Data Scientist — these are India\'s fastest-growing careers. Learning the basics today puts students years ahead.',
+      'Physical AI engineers, robotics specialists, and computer vision developers represent the fastest-growing engineering domains worldwide.',
     color: 'purple',
+  },
+  {
+    icon: Zap,
+    sector: 'Consumer Electronics',
+    title: 'Smart Home Automation',
+    description:
+      'Intelligent appliances and assistive robotic devices are entering daily living spaces, responding to vocal and gesture commands.',
+    color: 'cyan',
   },
 ]
 
-const statColorMap = {
-  blue:   { bg: 'bg-blue-50', border: 'border-blue-200', val: 'text-blue-700', sub: 'text-blue-600' },
-  purple: { bg: 'bg-purple-50', border: 'border-purple-200', val: 'text-purple-700', sub: 'text-purple-600' },
-  emerald:{ bg: 'bg-emerald-50', border: 'border-emerald-200', val: 'text-emerald-700', sub: 'text-emerald-600' },
-  amber:  { bg: 'bg-amber-50', border: 'border-amber-200', val: 'text-amber-700', sub: 'text-amber-600' },
-}
-
-const whyColorMap = {
-  blue:   { icon: 'bg-blue-50 border-blue-200 text-blue-600', border: 'hover:border-blue-300 hover:shadow-blue-500/10', tag: 'bg-blue-50/90 text-blue-700 border-blue-200/70' },
-  purple: { icon: 'bg-purple-50 border-purple-200 text-purple-600', border: 'hover:border-purple-300 hover:shadow-purple-500/10', tag: 'bg-purple-50/90 text-purple-700 border-purple-200/70' },
-  emerald:{ icon: 'bg-emerald-50 border-emerald-200 text-emerald-600', border: 'hover:border-emerald-300 hover:shadow-emerald-500/10', tag: 'bg-emerald-50/90 text-emerald-700 border-emerald-200/70' },
-  orange: { icon: 'bg-orange-50 border-orange-200 text-orange-600', border: 'hover:border-orange-300 hover:shadow-orange-500/10', tag: 'bg-orange-50/90 text-orange-700 border-orange-200/70' },
-}
-
 function HighlightGrid({
   items,
-  accent,
+  theme = 'blue',
 }: {
   items: HighlightCard[]
-  accent: 'blue' | 'purple'
+  theme?: 'blue' | 'purple'
 }) {
-  const isBlue = accent === 'blue'
-  const iconBg = isBlue ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-purple-50 border-purple-200 text-purple-600'
-  const borderHover = isBlue ? 'hover:border-blue-300 hover:shadow-blue-500/10' : 'hover:border-purple-300 hover:shadow-purple-500/10'
-  const tagBg = isBlue ? 'bg-blue-50/90 text-blue-700 border-blue-200/70' : 'bg-purple-50/90 text-purple-700 border-purple-200/70'
-
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => {
@@ -223,34 +154,41 @@ function HighlightGrid({
         return (
           <div
             key={item.title}
-            className={`group relative rounded-2xl border border-white/90 bg-white/80 p-6 shadow-sm shadow-slate-200/60 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${borderHover}`}
+            className="group relative rounded-2xl border border-white/[0.08] bg-[#0D131C] p-6 transition-all duration-300 hover:border-blue-500/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 flex flex-col justify-between"
           >
-            {/* Top icon and subtitle */}
-            <div className="flex items-center justify-between mb-4">
-              <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${iconBg} shadow-xs`}>
-                <Icon className="h-5 w-5" aria-hidden="true" />
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl border ${
+                    theme === 'blue'
+                      ? 'bg-blue-500/10 border-blue-500/30 text-cyan-400'
+                      : 'bg-purple-500/10 border-purple-500/30 text-purple-400'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <span className="text-[11px] font-mono font-semibold tracking-wider uppercase text-slate-400">
+                  {item.subtitle}
+                </span>
               </div>
-              <span className="text-[11px] font-bold tracking-wider uppercase text-slate-500">
-                {item.subtitle}
-              </span>
+
+              <h3 className="mb-2 text-base sm:text-lg font-bold text-white group-hover:text-blue-300 transition-colors">
+                {item.title}
+              </h3>
+
+              <p className="text-xs sm:text-sm leading-relaxed text-slate-300 mb-5 font-normal">
+                {item.description}
+              </p>
             </div>
 
-            <h3 className="mb-2 text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-              {item.title}
-            </h3>
-
-            <p className="text-sm leading-relaxed text-slate-600 mb-5 font-normal">
-              {item.description}
-            </p>
-
-            {/* Simple concept tags */}
-            <div className="flex flex-wrap gap-1.5 pt-3.5 border-t border-slate-100">
+            <div className="flex flex-wrap gap-1.5 pt-3.5 border-t border-white/[0.06]">
               {item.simplePoints.map((t) => (
                 <span
                   key={t}
-                  className={`inline-block rounded-md border px-2 py-0.5 text-[11px] font-semibold ${tagBg}`}
+                  className="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-medium text-slate-300"
                 >
-                  {t}
+                  <Check className="h-3 w-3 text-cyan-400" />
+                  <span>{t}</span>
                 </span>
               ))}
             </div>
@@ -264,213 +202,110 @@ function HighlightGrid({
 export default function WorkshopHighlights() {
   return (
     <section
-      id="what-youll-learn"
-      className="bg-gradient-to-b from-slate-50 via-slate-100/40 to-slate-50 py-24 relative overflow-hidden"
-      aria-labelledby="highlights-heading"
+      id="curriculum"
+      className="relative py-20 sm:py-28 bg-[#05070B] text-white border-b border-white/[0.06] overflow-hidden"
+      aria-labelledby="curriculum-heading"
     >
-      {/* Background ambient lighting */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-1/2 -left-40 h-[600px] w-[600px] rounded-full bg-blue-300/15 blur-[160px]" />
-        <div className="absolute top-1/3 -right-40 h-[600px] w-[600px] rounded-full bg-purple-300/15 blur-[160px]" />
-      </div>
-
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* WHY AI & ROBOTICS MATTERS TODAY */}
-        {/* ══════════════════════════════════════════════════════════ */}
-        <div className="mb-24">
-          {/* Sub-section header */}
-          <div className="mb-12 text-center max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-amber-50/80 px-3.5 py-1 text-xs font-bold text-amber-700 uppercase tracking-widest mb-4 shadow-2xs">
-              <TrendingUp className="h-3.5 w-3.5" />
-              Why It Matters Now
-            </div>
-            <h2
-              id="highlights-heading"
-              className="text-3xl font-black text-slate-900 sm:text-5xl tracking-tight"
-            >
-              AI & Robotics Are{' '}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Reshaping the World
-              </span>
-            </h2>
-            <p className="mt-4 text-base sm:text-lg text-slate-600 font-normal">
-              This isn&apos;t a future technology — it&apos;s happening right now, in hospitals, schools,
-              farms, and factories across India. Understanding it today is no longer optional.
-            </p>
-          </div>
-
-          {/* Impact Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-            {impactStats.map((stat) => {
-              const c = statColorMap[stat.color]
-              return (
-                <div
-                  key={stat.label}
-                  className={`rounded-2xl border ${c.border} ${c.bg} p-5 text-center shadow-xs`}
-                >
-                  <p className={`text-3xl sm:text-4xl font-black ${c.val} mb-1`}>{stat.value}</p>
-                  <p className="text-xs font-bold text-slate-700 leading-tight mb-1">{stat.label}</p>
-                  <p className={`text-[10px] font-semibold uppercase tracking-wider ${c.sub} opacity-80`}>{stat.sub}</p>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Why Cards Grid */}
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {whyCards.map((card) => {
-              const Icon = card.icon
-              const c = whyColorMap[card.color]
-              return (
-                <div
-                  key={card.title}
-                  className={`group relative rounded-2xl border border-white/90 bg-white/80 p-6 shadow-sm shadow-slate-200/60 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${c.border}`}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${c.icon} shadow-xs`}>
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <span className={`text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border ${c.tag}`}>
-                      {card.sector}
-                    </span>
-                  </div>
-                  <h3 className="mb-2 text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {card.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate-600 font-normal">
-                    {card.description}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Call-to-action banner */}
-          <div className="mt-10 rounded-3xl border border-blue-200/80 bg-gradient-to-r from-blue-50/80 via-indigo-50/80 to-purple-50/80 p-6 sm:p-8 text-center backdrop-blur-xl shadow-sm">
-            <p className="text-lg sm:text-xl font-black text-slate-900 mb-2">
-              🚀 The best time to learn about AI & Robotics was yesterday. The second best time is{' '}
-              <span className="text-blue-600">today.</span>
-            </p>
-            <p className="text-sm text-slate-600 font-normal max-w-xl mx-auto">
-              This free workshop gives you the knowledge to understand, discuss, and confidently
-              navigate the most transformative technology of our generation.
-            </p>
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════ */}
-        {/* WHAT YOU'LL LEARN */}
-        {/* ══════════════════════════════════════════════════════════ */}
-
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="mb-16 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-3.5 py-1 text-xs font-bold text-blue-700 uppercase tracking-widest mb-4 shadow-2xs">
-            <Lightbulb className="h-3.5 w-3.5" />
-            Easy-to-Understand Topics
+        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-950/40 px-3.5 py-1.5 text-xs font-semibold text-blue-300 mb-4 backdrop-blur-md">
+            <Bot className="h-3.5 w-3.5 text-blue-400" />
+            <span>Interactive Curriculum</span>
           </div>
+
           <h2
-            className="text-3xl font-black text-slate-900 sm:text-5xl tracking-tight"
+            id="curriculum-heading"
+            className="text-3xl font-extrabold tracking-tight sm:text-5xl text-white"
           >
-            What Will You Learn & See?
+            What You Will Learn &amp; Explore
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 font-normal">
-            We break down the future of technology in simple, everyday words.
-            No confusing computer terms, no prior knowledge required.
+
+          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
+            We break down cutting-edge technology into clear, intuitive concepts. No confusing mathematical jargon, zero prerequisites.
           </p>
         </div>
 
-        {/* ── The 3-Step Simple Guide (How Robots Work) ──────────────────── */}
-        <div className="mb-16 rounded-3xl border border-white/80 bg-white/70 p-6 sm:p-8 backdrop-blur-xl shadow-sm shadow-slate-200/50">
-          <h3 className="text-center text-xs font-bold uppercase tracking-[0.25em] text-slate-500 mb-6">
-            In 3 Simple Steps: How Robots Work With AI
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-center items-stretch">
-            <div className="relative p-5 rounded-2xl border border-blue-200/80 bg-blue-50/60 shadow-2xs flex flex-col justify-center">
-              <span className="text-xs font-bold text-blue-700 uppercase tracking-wider block mb-1">Step 1: The Eyes</span>
-              <p className="text-sm font-bold text-slate-900">Cameras &amp; Sensors</p>
-              <p className="text-xs text-slate-600 mt-1">The robot looks around and senses objects, obstacles, or movement</p>
-              <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-blue-600 shadow-2xs">
-                <ArrowRight className="h-3.5 w-3.5" />
-              </div>
-            </div>
-
-            <div className="relative p-5 rounded-2xl border border-cyan-200/80 bg-cyan-50/60 shadow-2xs flex flex-col justify-center">
-              <span className="text-xs font-bold text-cyan-800 uppercase tracking-wider block mb-1">Step 2: The Brain</span>
-              <p className="text-sm font-bold text-slate-900">Smart AI Thinking</p>
-              <p className="text-xs text-slate-600 mt-1">The small computer chip decides what to do based on what it sees</p>
-              <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-cyan-600 shadow-2xs">
-                <ArrowRight className="h-3.5 w-3.5" />
-              </div>
-            </div>
-
-            <div className="p-5 rounded-2xl border border-purple-200/80 bg-purple-50/60 shadow-2xs flex flex-col justify-center">
-              <span className="text-xs font-bold text-purple-700 uppercase tracking-wider block mb-1">Step 3: The Action</span>
-              <p className="text-sm font-bold text-slate-900">Motors Move</p>
-              <p className="text-xs text-slate-600 mt-1">The robot turns wheels, moves robotic arms, or steers safely</p>
-            </div>
-          </div>
-        </div>
-
-        {/* ── AI Section ──────────────────────────────────────────────── */}
-        <div className="mb-14">
+        {/* ── Track 1: Artificial Intelligence & Computer Vision ──────── */}
+        <div className="mb-16">
           <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-blue-300" />
-            <div className="flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/90 px-4 py-1.5 shadow-2xs">
-              <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" aria-hidden="true" />
-              <span className="text-xs sm:text-sm font-bold text-blue-700 tracking-wide uppercase">
-                Part 1 &bull; Artificial Intelligence (AI)
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-500/30" />
+            <div className="flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-4 py-1.5 backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true" />
+              <span className="text-xs sm:text-sm font-mono font-bold text-cyan-300 uppercase tracking-wider">
+                Module 01 • Artificial Intelligence &amp; Computer Vision
               </span>
             </div>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-blue-300" />
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/30" />
           </div>
-          <HighlightGrid items={aiHighlights} accent="blue" />
+          <HighlightGrid items={aiHighlights} theme="blue" />
         </div>
 
-        {/* ── Robotics Section ────────────────────────────────────────── */}
+        {/* ── Track 2: Robotics, Controllers & Sensors ───────────────── */}
         <div className="mb-20">
           <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-purple-300" />
-            <div className="flex items-center gap-2 rounded-full border border-purple-200/80 bg-white/90 px-4 py-1.5 shadow-2xs">
-              <span className="h-2 w-2 rounded-full bg-purple-600 animate-pulse" aria-hidden="true" />
-              <span className="text-xs sm:text-sm font-bold text-purple-700 tracking-wide uppercase">
-                Part 2 &bull; Robotics &amp; Smart Machines
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-purple-500/30" />
+            <div className="flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-950/40 px-4 py-1.5 backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-purple-400 animate-pulse" aria-hidden="true" />
+              <span className="text-xs sm:text-sm font-mono font-bold text-purple-300 uppercase tracking-wider">
+                Module 02 • Robotics Hardware &amp; Actuators
               </span>
             </div>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-purple-300" />
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-purple-500/30" />
           </div>
-          <HighlightGrid items={roboticsHighlights} accent="purple" />
+          <HighlightGrid items={roboticsHighlights} theme="purple" />
         </div>
 
-        {/* ── Who Can Attend (Open & Welcoming) ────────────────────────── */}
-        <div className="rounded-3xl border border-white/90 bg-white/80 p-8 sm:p-10 shadow-lg shadow-slate-200/50 backdrop-blur-2xl">
-          <div className="mb-8 text-center max-w-xl mx-auto">
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Who Can Attend?</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              This workshop is open to everyone in the local community. No technical background is needed.
+        {/* ── Real-World Impact Across Industries ─────────────────────── */}
+        <div className="rounded-3xl border border-white/10 bg-[#0D131C] p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+          <div className="mb-10 text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-950/40 px-3.5 py-1 text-xs font-mono font-bold text-amber-300 uppercase tracking-widest mb-3">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Real-World Impact
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Where Physical AI Is Operating Today
+            </h3>
+            <p className="mt-3 text-xs sm:text-sm text-slate-300">
+              Understanding these applications gives students and professionals a lasting competitive advantage.
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {audience.map(({ icon: Icon, label, desc }) => (
-              <div
-                key={label}
-                className="flex flex-col p-5 rounded-2xl border border-slate-200/70 bg-white/60 hover:bg-white hover:border-slate-300 transition-all shadow-2xs"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 mb-3 border border-blue-100 shadow-2xs">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {whyCards.map((card) => {
+              const Icon = card.icon
+              return (
+                <div
+                  key={card.title}
+                  className="rounded-2xl border border-white/[0.08] bg-[#0A0F16] p-5 hover:border-white/20 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 border border-white/10 text-cyan-400">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded border border-white/10 text-slate-400">
+                      {card.sector}
+                    </span>
+                  </div>
+                  <h4 className="text-sm sm:text-base font-bold text-white mb-1.5">{card.title}</h4>
+                  <p className="text-xs text-slate-300 leading-relaxed font-normal">{card.description}</p>
                 </div>
-                <h4 className="text-sm font-bold text-slate-900 mb-1">{label}</h4>
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">{desc}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-            <p className="text-xs text-slate-600 font-semibold">
-              ✨ Free Attendance &bull; Zero Prerequisites &bull; No Prior Coding, Math, or Science Knowledge Needed!
-            </p>
+          {/* Section CTA */}
+          <div className="mt-8 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div className="text-xs sm:text-sm text-slate-300">
+              ⚡ <strong>100% Free Community Attendance</strong> • Hands-on demonstrations included.
+            </div>
+            <a
+              href="#register"
+              className="inline-flex items-center gap-2 py-2.5 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md shadow-blue-600/30 shrink-0"
+            >
+              <span>Reserve My Spot</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </a>
           </div>
         </div>
       </div>

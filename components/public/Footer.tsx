@@ -1,54 +1,53 @@
-import { Mail, Phone, Globe, MapPin } from 'lucide-react'
+import { Mail, Phone, Globe, MapPin, ShieldCheck, Heart } from 'lucide-react'
 import { workshopConfig } from '@/lib/config/workshop'
 
 export default function Footer() {
   const { address } = workshopConfig
 
   return (
-    <footer className="bg-slate-100/60 border-t border-slate-200/80 text-slate-600 backdrop-blur-md">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="bg-[#05070B] border-t border-white/10 text-slate-400 py-16 relative z-10">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 mb-12">
-          {/* Brand */}
+          {/* Brand & Mission */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/logo.png"
                 alt={workshopConfig.company}
-                className="h-9 w-auto rounded-lg shadow-xs"
+                className="h-9 w-auto rounded-lg brightness-110"
               />
             </div>
-            <p className="text-sm leading-relaxed text-slate-500 max-w-xs font-normal mb-3">
-              Demystifying artificial intelligence and robotics for our local community
-              through friendly, free awareness sessions and live demonstrations.
+            <p className="text-sm leading-relaxed text-slate-400 max-w-xs font-normal mb-4">
+              Demystifying artificial intelligence and robotics for our local community through hands-on awareness sessions and live hardware demonstrations.
             </p>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/80 px-3 py-1 text-xs font-semibold text-amber-800">
-              <span className="text-amber-500">★★★★★</span>
-              <span>5.0 on Google</span>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-3.5 py-1 text-xs font-semibold text-amber-400">
+              <span className="text-amber-400">★★★★★</span>
+              <span>5.0 Rating on Google Reviews</span>
             </div>
           </div>
 
-          {/* Contact */}
+          {/* Contact & Support */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-slate-200 mb-4">
               Contact &amp; Inquiries
             </h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href={`tel:${workshopConfig.phoneRaw}`}
-                  className="flex items-center gap-2.5 text-sm font-medium text-slate-700 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2.5 text-sm text-slate-300 hover:text-cyan-400 transition-colors"
                 >
-                  <Phone className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
+                  <Phone className="h-4 w-4 shrink-0 text-cyan-400" aria-hidden="true" />
                   <span>{workshopConfig.contactPhone}</span>
                 </a>
               </li>
               <li>
                 <a
                   href={`mailto:${workshopConfig.contactEmail}`}
-                  className="flex items-center gap-2.5 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2.5 text-sm text-slate-300 hover:text-cyan-400 transition-colors"
                 >
-                  <Mail className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
+                  <Mail className="h-4 w-4 shrink-0 text-cyan-400" aria-hidden="true" />
                   <span>{workshopConfig.contactEmail}</span>
                 </a>
               </li>
@@ -57,25 +56,25 @@ export default function Footer() {
                   href={workshopConfig.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 text-sm text-slate-600 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2.5 text-sm text-slate-300 hover:text-cyan-400 transition-colors"
                 >
-                  <Globe className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
+                  <Globe className="h-4 w-4 shrink-0 text-cyan-400" aria-hidden="true" />
                   <span>weguide.work</span>
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Address */}
+          {/* Venue & Location */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-4">
-              Office &amp; Workshop Venue
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-slate-200 mb-4">
+              Lab &amp; Workshop Venue
             </h3>
-            <address className="not-italic space-y-2 text-sm text-slate-600 leading-relaxed">
+            <address className="not-italic space-y-2 text-sm text-slate-300 leading-relaxed">
               <div className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 shrink-0 mt-1 text-blue-600" aria-hidden="true" />
+                <MapPin className="h-4 w-4 shrink-0 mt-1 text-cyan-400" aria-hidden="true" />
                 <div>
-                  <strong className="text-slate-900 font-semibold block">{workshopConfig.company}</strong>
+                  <strong className="text-white font-semibold block">{workshopConfig.company} Robotics Lab</strong>
                   <span>{address.line1}</span><br />
                   <span>{address.locality}</span><br />
                   <span>{address.city}, {address.state} — {address.pincode}</span>
@@ -86,7 +85,7 @@ export default function Footer() {
                   href={address.googleMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:text-cyan-300 hover:underline"
                 >
                   <span>Get Directions on Google Maps</span>
                   <span aria-hidden="true">&rarr;</span>
@@ -96,45 +95,25 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Interactive Google Map Embed */}
-        <div className="mb-12 overflow-hidden rounded-2xl border border-white/80 bg-white/80 shadow-md shadow-slate-200/50 backdrop-blur-xl">
-          <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 bg-slate-50/80 border-b border-slate-100 text-xs">
-            <div className="flex items-center gap-2 text-slate-800 font-bold">
-              <MapPin className="h-4 w-4 text-blue-600" aria-hidden="true" />
-              <span>Workshop Venue: 2nd Floor, Orchid Mall, Sekharipuram, Palakkad</span>
-            </div>
-            <a
-              href={address.googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:text-blue-700 hover:underline"
-            >
-              <span>Open Directions in Google Maps</span>
-              <span aria-hidden="true">&rarr;</span>
-            </a>
+        {/* Reassurance strip */}
+        <div className="rounded-2xl border border-white/[0.08] bg-[#0A0F16] p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
+            <span>Community Educational Initiative by WeGuide AI • 100% Free Entry</span>
           </div>
-          <iframe
-            src={address.embedMapUrl}
-            width="100%"
-            height="240"
-            style={{ border: 0 }}
-            allowFullScreen={false}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="We Guide Orchid Mall Palakkad Location Map"
-            className="w-full"
-          />
+          <div className="flex items-center gap-1.5 text-slate-400">
+            <span>Crafted with</span>
+            <Heart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" />
+            <span>for Palakkad &amp; Kerala Tech Community</span>
+          </div>
         </div>
 
-        {/* Divider + Disclaimer */}
-        <div className="border-t border-slate-200/80 pt-8">
-          <p
-            className="text-slate-400 leading-relaxed max-w-4xl mx-auto text-center font-normal"
-            style={{ fontSize: '10px', lineHeight: '1.6' }}
-          >
+        {/* Disclaimer & Copyright */}
+        <div className="border-t border-white/[0.08] pt-8 text-center space-y-3">
+          <p className="text-[11px] text-slate-400 leading-relaxed max-w-4xl mx-auto">
             {workshopConfig.disclaimer}
           </p>
-          <p className="mt-4 text-center text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             &copy; {new Date().getFullYear()} {workshopConfig.company}. All rights reserved.
           </p>
         </div>

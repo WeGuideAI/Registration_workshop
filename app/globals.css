@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #f8fafc;
+  --color-background: #05070b;
+  --color-surface: #0a0f16;
+  --color-card: #0d131c;
 }
 
-/* ── Base resets ───────────────────────────────────────────── */
+/* ── Base resets & dark theme ──────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -13,36 +15,79 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #05070b;
+  color-scheme: dark;
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #05070b;
+  color: #f8fafc;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* ── Focus visible ─────────────────────────────────────────── */
+/* ── Focus visible accessibility ────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
-/* ── Scrollbar (webkit) ────────────────────────────────────── */
+/* ── Custom dark scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #0a0f16;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #1e293b;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #334155;
 }
 
-/* ── Print ─────────────────────────────────────────────────── */
+/* ── Selection ──────────────────────────────────────────────────────── */
+::selection {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* ── Animations & Reduced Motion ────────────────────────────────────── */
+@keyframes data-flow {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-data-flow {
+  animation: data-flow 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Print ──────────────────────────────────────────────────────────── */
 @media print {
-  body { background: white; color: black; }
+  body {
+    background: white;
+    color: black;
+  }
 }
