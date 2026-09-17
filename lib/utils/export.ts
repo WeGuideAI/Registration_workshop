@@ -12,14 +12,15 @@ function formatDateTime(iso: string): { date: string; time: string } {
   return { date, time }
 }
 
-function cap(s: string | undefined): string {
-  if (!s) return ''
-  return s.charAt(0).toUpperCase() + s.slice(1)
+function formatApplicantType(type: Registration['applicantType']): string {
+  if (type === 'school_student') return 'School Student'
+  if (type === 'college_student') return 'College Student'
+  return 'Parent / Professional'
 }
 
 export function exportRegistrationsToCsv(
   registrations: Registration[],
-  filename = 'weguide-registrations.csv'
+  filename = 'weguide-workshop-registrations.csv'
 ): void {
   const rows = registrations.map((r) => {
     const { date: regDate, time: regTime } = formatDateTime(r.createdAt)
@@ -30,22 +31,21 @@ export function exportRegistrationsToCsv(
       'Full Name':            r.fullName,
       'Email':                r.email,
       'Phone':                r.phone,
-      'City / Area':          r.city              ?? '',
-      'Applicant Type':       r.applicantType,
+      'Applicant Category':   formatApplicantType(r.applicantType),
       'Experience Level':     r.experienceLevel,
-      'How Heard About':      r.hearAboutUs       ?? '',
-      'Status':               cap(r.status),
-      // School student
+      'City / Area':          r.city              ?? '',
+      'Discovered Via':       r.hearAboutUs       ?? '',
+      // School student specific
       'School Name':          r.schoolName              ?? '',
       'Grade':                r.grade                   ?? '',
       'Parent Guardian Name': r.parentGuardianName      ?? '',
       'Parent Guardian Phone':r.parentGuardianPhone     ?? '',
-      // College student
+      // College student specific
       'College Name':         r.collegeName             ?? '',
       'Course / Stream':      r.course                  ?? '',
       'Year of Study':        r.yearOfStudy             ?? '',
       'Tech Interests':       r.techInterests           ?? '',
-      // Professional
+      // Professional specific
       'Occupation':           r.occupation              ?? '',
       'Workplace':            r.workplace               ?? '',
       'Child Attending':      r.hasChildAttending ? 'Yes' : '',

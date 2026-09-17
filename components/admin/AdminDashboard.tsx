@@ -2,19 +2,19 @@
 
 import { useState, useMemo } from 'react'
 import AdminHeader from './AdminHeader'
-import StatsCards from './StatsCards'
+import StatsCards, { type LogicalDashboardStats } from './StatsCards'
 import RegistrationsByType from './SlotManagement'
 import Filters, { type FilterState } from './Filters'
 import AttendeeTable from './AttendeeTable'
 import ExportButton from './ExportButton'
 import EmptyState from '@/components/ui/EmptyState'
 import { SearchX } from 'lucide-react'
-import type { Registration, DashboardStats } from '@/lib/types/workshop'
+import type { Registration } from '@/lib/types/workshop'
 
 interface AdminDashboardProps {
-  userEmail:     string
+  userEmail: string
   registrations: Registration[]
-  stats:         DashboardStats
+  stats: LogicalDashboardStats
 }
 
 export default function AdminDashboard({
@@ -23,26 +23,58 @@ export default function AdminDashboard({
   stats,
 }: AdminDashboardProps) {
   const [filters, setFilters] = useState<FilterState>({
-    search:          '',
-    applicantType:   '',
+    search: '',
+    applicantType: '',
     experienceLevel: '',
-    status:          '',
+    source: '',
   })
+
+  // Extract all distinct non-empty referral sources for the dropdown
+  const availableSources = useMemo(() => {
+    const set = new Set<string>()
+    registrations.forEach((r) => {
+      if (r.hearAboutUs) set.add(r.hearAboutUs)
+    })
+    return Array.from(set).sort()
+  }, [registrations])
 
   const filtered = useMemo(() => {
     const q = filters.search.toLowerCase().trim()
     return registrations.filter((r) => {
-      if (q && !(
-        r.fullName.toLowerCase().includes(q) ||
-        r.email.toLowerCase().includes(q)
-      )) return false
+      // Free-text search across all relevant fields
+      if (q) {
+        const matchesName = r.fullName.toLowerCase().includes(q)
+        const matchesEmail = r.email.toLowerCase().includes(q)
+        const matchesPhone = r.phone.toLowerCase().includes(q)
+        const matchesCity = (r.city || '').toLowerCase().includes(q)
+        const matchesSchool = (r.schoolName || '').toLowerCase().includes(q)
+        const matchesCollege = (r.collegeName || '').toLowerCase().includes(q)
+        const matchesWorkplace = (r.workplace || '').toLowerCase().includes(q)
 
-      if (filters.applicantType && r.applicantType !== filters.applicantType) return false
+        if (
+          !matchesName &&
+          !matchesEmail &&
+          !matchesPhone &&
+          !matchesCity &&
+          !matchesSchool &&
+          !matchesCollege &&
+          !matchesWorkplace
+        ) {
+          return false
+        }
+      }
 
-      if (filters.experienceLevel && r.experienceLevel !== filters.experienceLevel)
+      if (filters.applicantType && r.applicantType !== filters.applicantType) {
         return false
+      }
 
-      if (filters.status && r.status !== filters.status) return false
+      if (filters.experienceLevel && r.experienceLevel !== filters.experienceLevel) {
+        return false
+      }
+
+      if (filters.source && r.hearAboutUs !== filters.source) {
+        return false
+      }
 
       return true
     })
@@ -52,33 +84,33 @@ export default function AdminDashboard({
     !!filters.search ||
     !!filters.applicantType ||
     !!filters.experienceLevel ||
-    !!filters.status
+    !!filters.source
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100/50 to-slate-50 text-slate-900">
       <AdminHeader userEmail={userEmail} />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-        {/* Stats */}
-        <section aria-label="Registration statistics">
+        {/* Executive Overview Stats */}
+        <section aria-label="Workshop registration statistics">
           <StatsCards stats={stats} />
         </section>
 
-        {/* Breakdown by applicant type */}
+        {/* Audience Type Breakdown */}
         <RegistrationsByType registrations={registrations} />
 
-        {/* Attendee directory */}
-        <section aria-labelledby="attendees-heading">
+        {/* Registrant Directory */}
+        <section aria-labelledby="registrants-heading">
           {/* Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div>
-              <h2 id="attendees-heading" className="text-base font-bold text-slate-900 tracking-tight">
-                Attendee Directory
+              <h2 id="registrants-heading" className="text-base font-bold text-slate-900 tracking-tight">
+                Registrations Directory
               </h2>
               <p className="text-xs text-slate-500 mt-0.5 font-medium">
                 {filtered.length}{' '}
                 {hasActiveFilters ? 'matching ' : ''}
-                attendee{filtered.length !== 1 ? 's' : ''}
+                registration{filtered.length !== 1 ? 's' : ''}
                 {hasActiveFilters && ` (of ${registrations.length} total)`}
               </p>
             </div>
@@ -87,7 +119,11 @@ export default function AdminDashboard({
 
           {/* Filters */}
           <div className="mb-4">
-            <Filters filters={filters} onChange={setFilters} />
+            <Filters
+              filters={filters}
+              availableSources={availableSources}
+              onChange={setFilters}
+            />
           </div>
 
           {/* Table or empty state */}
@@ -95,8 +131,8 @@ export default function AdminDashboard({
             <div className="rounded-2xl border border-white/90 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
               <EmptyState
                 icon={SearchX}
-                title="No attendees match your filters"
-                description="Try adjusting your search or clearing the active filters."
+                title="No registrations match your search filters"
+                description="Try clearing your filters or changing search keywords."
               />
             </div>
           ) : (

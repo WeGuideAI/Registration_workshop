@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { parseSupabaseError } from '@/lib/utils/errors'
 import { getAdminSession } from '@/app/actions/admin-auth'
-import type { ActionResult, RegistrationStatus } from '@/lib/types/workshop'
+import type { ActionResult } from '@/lib/types/workshop'
 import { revalidatePath } from 'next/cache'
 
 async function requireAdmin() {
@@ -14,16 +14,15 @@ async function requireAdmin() {
   return supabase as any
 }
 
-export async function updateRegistrationStatus(
-  registrationId: string,
-  status: RegistrationStatus
+export async function deleteRegistration(
+  registrationId: string
 ): Promise<ActionResult<void>> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase: any = await requireAdmin()
     const { error } = await supabase
       .from('registrations')
-      .update({ status })
+      .delete()
       .eq('id', registrationId)
 
     if (error) return { success: false, error: parseSupabaseError(error) }

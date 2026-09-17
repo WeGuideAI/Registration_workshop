@@ -2,14 +2,14 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, ShieldCheck, KeyRound } from 'lucide-react'
+import { Eye, EyeOff, Lock } from 'lucide-react'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import { loginAdmin } from '@/app/actions/admin-auth'
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('admin@weguide.work')
-  const [password, setPassword] = useState('weguide@2026')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -26,15 +26,9 @@ export default function LoginForm() {
         router.push('/admin')
         router.refresh()
       } else {
-        setError(result.error || 'Failed to sign in.')
+        setError(result.error || 'Authentication failed. Please verify your credentials.')
       }
     })
-  }
-
-  const fillDefaultCredentials = () => {
-    setEmail('admin@weguide.work')
-    setPassword('weguide@2026')
-    setError(null)
   }
 
   return (
@@ -42,7 +36,7 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <Input
           name="email"
-          label="Email Address"
+          label="Admin Email"
           type="email"
           required
           autoComplete="email"
@@ -58,7 +52,7 @@ export default function LoginForm() {
             type={showPass ? 'text' : 'password'}
             required
             autoComplete="current-password"
-            placeholder="••••••••"
+            placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -77,8 +71,8 @@ export default function LoginForm() {
         </div>
 
         {error && (
-          <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 shadow-2xs">
-            <p className="text-xs font-semibold text-red-700">{error}</p>
+          <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 shadow-2xs">
+            <p className="text-xs font-semibold text-rose-700">{error}</p>
           </div>
         )}
 
@@ -90,33 +84,10 @@ export default function LoginForm() {
           loading={isPending}
           className="shadow-md shadow-blue-500/20"
         >
-          {isPending ? 'Signing in…' : 'Sign In to Dashboard'}
+          <Lock className="h-4 w-4 mr-1.5" />
+          {isPending ? 'Authenticating…' : 'Sign In to Dashboard'}
         </Button>
       </form>
-
-      {/* Built-in quick credentials helper */}
-      <div className="mt-5 rounded-2xl bg-slate-50/80 border border-slate-200/80 p-3.5 text-xs text-slate-600">
-        <div className="flex items-center justify-between mb-1.5 font-semibold text-slate-800">
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck className="h-4 w-4 text-blue-600" />
-            Built-in Login Credentials
-          </span>
-          <button
-            type="button"
-            onClick={fillDefaultCredentials}
-            className="text-[11px] font-bold text-blue-600 hover:text-blue-700 underline cursor-pointer"
-          >
-            Auto-fill
-          </button>
-        </div>
-        <div className="space-y-1 font-mono text-[11px] text-slate-500 bg-white/70 p-2 rounded-lg border border-slate-200/50">
-          <div><span className="text-slate-400">Email:</span> <strong className="text-slate-700">admin@weguide.work</strong></div>
-          <div><span className="text-slate-400">Pass:</span> <strong className="text-slate-700">weguide@2026</strong></div>
-        </div>
-        <p className="mt-2 text-[10px] text-slate-400 leading-tight">
-          Default built-in credentials. Ready for immediate access without database setup.
-        </p>
-      </div>
     </div>
   )
 }
