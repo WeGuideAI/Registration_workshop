@@ -20,42 +20,33 @@ Production-ready event registration and admin management platform.
 npm install
 ```
 
-### 2. Create your Supabase project
+### 2. Setup Database in Supabase
 
 1. Go to [supabase.com](https://supabase.com) and create a new project.
-2. Go to **SQL Editor** in Supabase and run the migration:
+2. In your Supabase dashboard, click **SQL Editor** (left sidebar).
+3. Click **+ New query**, paste the entire contents of:
+   ```
+   supabase/migrations/001_initial_schema.sql
+   ```
+   and click **Run**.
 
-```sql
--- Run contents of:
-supabase/migrations/001_initial_schema.sql
-```
-
-This creates the `slots`, `registrations`, `admin_users` tables, row-level security policies, and the concurrency-safe `register_user_for_slot` booking procedure.
+This creates the `registrations` table with all participant fields (School, College, Parent/Professional), indexes, RLS policies, and triggers.
 
 ### 3. Configure environment variables
 
-```bash
-cp .env.example .env.local
-```
-
-Fill in:
+In `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 ```
+Both values are found in **Supabase → Settings (gear icon) → API** (or Data API).
 
-Both values are found in **Supabase → Settings → API**.
+### 4. Admin Access
 
-### 4. Create your admin user
-
-1. In Supabase → **Authentication → Users**, create a new user (Email/Password, e.g. `admin@weguide.work`).
-2. In Supabase → **SQL Editor**, grant admin rights:
-
-```sql
--- Replace with the actual user UUID from the Auth Users table
-INSERT INTO public.admin_users (id)
-VALUES ('paste-user-uuid-here');
-```
+The project includes a built-in secure admin login at `/admin/login`:
+- **Default Email**: `admin@weguide.work`
+- **Default Password**: `weguide@2026`
+*(Can be customized via `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables).*
 
 ### 5. Run locally
 
