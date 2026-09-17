@@ -1,50 +1,32 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/types/database'
 
-function requireEnv(name: string): string {
-  const val = process.env[name]
-  if (val) return val
+function getSupabaseConfig(): { url: string; key: string } {
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    'https://placeholder.supabase.co'
 
-  if (name === 'NEXT_PUBLIC_SUPABASE_ANON_KEY') {
-    const pubKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-    if (pubKey) return pubKey
-    return 'placeholder-anon-key'
-  }
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    'placeholder-anon-key'
 
-  if (name === 'NEXT_PUBLIC_SUPABASE_URL') {
-    return 'https://placeholder.supabase.co'
-  }
-
-  return 'placeholder-anon-key'
+  return { url, key }
 }
 
 /**
- * Server-side Supabase client.
- * Used in Server Components, Server Actions, and Route Handlers.
- * Reads/writes session cookies so auth state is preserved.
+ * Server-side Supabase client for database operations.
+ * Robust, direct connection that works seamlessly across Server Actions,
+ * Server Components, and API routes without brittle request-cookie dependencies.
  */
 export async function createClient() {
-  const cookieStore = await cookies()
+  const { url, key } = getSupabaseConfig()
 
-  return createServerClient<Database>(
-    requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
-    requireEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // Server Component context — cookie writes are ignored safely
-          }
-        },
-      },
-    }
-  )
+  return createSupabaseClient<Database>(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  })
 }
