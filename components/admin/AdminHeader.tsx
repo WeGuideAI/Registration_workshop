@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { LogOut, User, ChevronDown } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { logoutAdmin } from '@/app/actions/admin-auth'
 import { workshopConfig } from '@/lib/config/workshop'
 import Button from '@/components/ui/Button'
 
@@ -14,13 +13,10 @@ interface AdminHeaderProps {
 export default function AdminHeader({ userEmail }: AdminHeaderProps) {
   const [signingOut, setSigningOut] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const router = useRouter()
 
   const handleSignOut = async () => {
     setSigningOut(true)
-    const supabase = createClient()
-    if (supabase) await supabase.auth.signOut()
-    router.push('/admin/login')
+    await logoutAdmin()
   }
 
   return (
@@ -80,7 +76,7 @@ export default function AdminHeader({ userEmail }: AdminHeaderProps) {
                       fullWidth
                       loading={signingOut}
                       onClick={handleSignOut}
-                      className="justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="justify-start text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer"
                     >
                       <LogOut className="h-4 w-4 mr-1.5" aria-hidden="true" />
                       Sign out

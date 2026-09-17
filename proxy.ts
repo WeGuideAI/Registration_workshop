@@ -1,57 +1,43 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Next.js 16 Proxy (formerly middleware):
- * 1. Refreshes the Supabase auth session on every request.
- * 2. Redirects unauthenticated users away from /admin/* routes.
- * 3. Redirects already-authenticated users away from /admin/login.
+ * Next.js 16 Proxy:
+ * 1. Checks for built-in admin session cookie.
+ * 2. Redirects unauthenticated users away from /admin/* routes to /admin/login.
+ * 3. Redirects already-authenticated users from /admin/login to /admin.
  */
 export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+  const adminCookie = request.cookies.get('wg_admin_session')
+  let isAuthenticated = false
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key'
-
-  const supabase = createServerClient(url, key, {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
+  if (adminCookie?.value) {
+    try {
+      const data = JSON.parse(adminCookie.value)
+      if (data?.role === 'admin' && data?.email) {
+        isAuthenticated = true
+      }
+    } catch {
+      isAuthenticated = false
     }
-  )
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  }
 
   const isAdminPath = request.nextUrl.pathname.startsWith('/admin')
   const isLoginPath = request.nextUrl.pathname === '/admin/login'
 
-  if (isAdminPath && !isLoginPath && !user) {
+  if (isAdminPath && !isLoginPath && !isAuthenticated) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/admin/login'
     loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
     return NextResponse.redirect(loginUrl)
   }
 
-  if (isLoginPath && user) {
+  if (isLoginPath && isAuthenticated) {
     const dashboardUrl = request.nextUrl.clone()
     dashboardUrl.pathname = '/admin'
     return NextResponse.redirect(dashboardUrl)
   }
 
-  return supabaseResponse
+  return NextResponse.next()
 }
 
 export const config = {
