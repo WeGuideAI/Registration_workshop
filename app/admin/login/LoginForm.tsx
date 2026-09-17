@@ -32,7 +32,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="rounded-3xl border border-white/90 bg-white/85 p-7 shadow-xl shadow-slate-200/60 backdrop-blur-xl ring-1 ring-slate-900/5">
+    <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-8 shadow-xl shadow-slate-200/50">
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <Input
           name="email"
@@ -43,6 +43,7 @@ export default function LoginForm() {
           placeholder="admin@weguide.work"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          dark={false}
         />
 
         <div className="relative">
@@ -55,6 +56,7 @@ export default function LoginForm() {
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            dark={false}
           />
           <button
             type="button"
@@ -71,8 +73,8 @@ export default function LoginForm() {
         </div>
 
         {error && (
-          <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 shadow-2xs">
-            <p className="text-xs font-semibold text-rose-700">{error}</p>
+          <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700">
+            {error}
           </div>
         )}
 
@@ -82,7 +84,7 @@ export default function LoginForm() {
           size="lg"
           fullWidth
           loading={isPending}
-          className="shadow-md shadow-blue-500/20"
+          className="mt-2 shadow-md shadow-blue-600/20 text-sm font-bold py-3"
         >
           <Lock className="h-4 w-4 mr-1.5" />
           {isPending ? 'Authenticating…' : 'Sign In to Dashboard'}

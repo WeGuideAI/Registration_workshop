@@ -67,7 +67,7 @@ export default function StatsCards({ stats }: StatsCardsProps) {
         return (
           <div
             key={card.label}
-            className="rounded-2xl border border-white/90 bg-white/80 p-5 shadow-sm shadow-slate-200/60 backdrop-blur-xl ring-1 ring-slate-900/5 transition-all hover:shadow-md"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm"
           >
             <div className="flex items-start justify-between mb-3">
               <div className={cn('rounded-xl p-2.5 shadow-2xs', card.iconBg)}>
@@ -77,7 +77,7 @@ export default function StatsCards({ stats }: StatsCardsProps) {
             <p className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums mb-1 tracking-tight truncate" title={String(card.value)}>
               {card.value}
             </p>
-            <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">{card.label}</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{card.label}</p>
             {card.description && (
               <p className="text-xs text-slate-400 mt-1 font-medium truncate">{card.description}</p>
             )}

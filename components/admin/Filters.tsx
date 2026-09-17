@@ -36,9 +36,9 @@ function FilterSelect({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'h-10 rounded-xl border border-slate-200/90 bg-white/90 px-3 text-xs font-semibold text-slate-700 shadow-2xs backdrop-blur-md',
-          'focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500',
-          'hover:border-slate-300 transition-colors cursor-pointer'
+          'h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-semibold text-slate-800 shadow-xs',
+          'focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600',
+          'hover:border-slate-400 transition-colors cursor-pointer'
         )}
       >
         <option value="">{label}</option>
@@ -76,9 +76,9 @@ export default function Filters({ filters, availableSources, onChange }: Filters
           value={filters.search}
           onChange={(e) => onChange({ ...filters, search: e.target.value })}
           className={cn(
-            'h-10 w-full rounded-xl border border-slate-200/90 bg-white/90 pl-9 pr-4 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 shadow-2xs backdrop-blur-md',
-            'focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500',
-            'hover:border-slate-300 transition-colors'
+            'h-10 w-full rounded-xl border border-slate-300 bg-white pl-9 pr-4 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 shadow-xs',
+            'focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600',
+            'hover:border-slate-400 transition-colors'
           )}
           aria-label="Search registrations"
         />
@@ -118,16 +118,15 @@ export default function Filters({ filters, availableSources, onChange }: Filters
         />
       )}
 
-      {/* Clear all */}
+      {/* Reset button */}
       {hasActiveFilters && (
         <button
           type="button"
           onClick={clearAll}
-          className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-slate-100"
-          aria-label="Clear all filters"
+          className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer shadow-xs"
         >
           <X className="h-3.5 w-3.5" aria-hidden="true" />
-          Clear filters
+          Clear Filters
         </button>
       )}
     </div>

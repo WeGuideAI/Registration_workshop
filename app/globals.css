@@ -6,7 +6,7 @@
   --color-card: #0d131c;
 }
 
-/* ── Base resets & dark theme ──────────────────────────────────────── */
+/* ── Base resets ────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -15,15 +15,13 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #05070b;
-  color-scheme: dark;
 }
 
 body {
-  background-color: #05070b;
-  color: #f8fafc;
   min-height: 100vh;
   overflow-x: hidden;
+  background-color: #05070b;
+  color: #f8fafc;
 }
 
 /* ── Focus visible accessibility ────────────────────────────────────── */
@@ -32,7 +30,7 @@ body {
   outline-offset: 2px;
 }
 
-/* ── Custom dark scrollbar ──────────────────────────────────────────── */
+/* ── Custom scrollbars ──────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -52,6 +50,32 @@ body {
 ::selection {
   background-color: #2563eb;
   color: #ffffff;
+}
+
+/* ── Force Pure Crisp Light Mode across Admin Portal ────────────────── */
+body:has(.admin-portal),
+.admin-portal {
+  color-scheme: light !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.admin-portal input,
+.admin-portal select,
+.admin-portal textarea {
+  color-scheme: light !important;
+  color: #0f172a !important;
+}
+
+.admin-portal ::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+}
+.admin-portal ::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 4px;
+}
+.admin-portal ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8 !important;
 }
 
 /* ── Animations & Reduced Motion ────────────────────────────────────── */
@@ -87,7 +111,7 @@ body {
 /* ── Print ──────────────────────────────────────────────────────────── */
 @media print {
   body {
-    background: white;
-    color: black;
+    background: white !important;
+    color: black !important;
   }
 }

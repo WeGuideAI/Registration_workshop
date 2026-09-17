@@ -60,11 +60,11 @@ export default function RegistrationsByType({ registrations }: RegistrationsByTy
           >
             Audience Distribution
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5 font-medium">
             Registration breakdown by participant category
           </p>
         </div>
-        <span className="text-xs font-bold text-slate-600 bg-slate-100/90 border border-slate-200/80 rounded-full px-3 py-1">
+        <span className="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded-full px-3 py-1">
           {total} Total Applicants
         </span>
       </div>
@@ -78,14 +78,14 @@ export default function RegistrationsByType({ registrations }: RegistrationsByTy
           return (
             <div
               key={row.type}
-              className="rounded-2xl border border-white/90 bg-white/85 p-5 shadow-sm shadow-slate-200/60 backdrop-blur-xl ring-1 ring-slate-900/5 transition-all hover:shadow-md"
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm"
             >
               <div className="flex items-center gap-3.5 mb-4">
                 <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${row.iconBg} ${row.iconFg} shadow-2xs`}>
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                     {row.label}
                   </p>
                   <p className="text-2xl font-black text-slate-900 tabular-nums leading-tight mt-0.5">
@@ -95,18 +95,15 @@ export default function RegistrationsByType({ registrations }: RegistrationsByTy
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs mb-1.5">
-                <span className="text-slate-500 font-medium">Audience share</span>
-                <span className="font-bold text-slate-700">{pct}%</span>
+              <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
+                <span className="text-slate-500">Audience share</span>
+                <span className="font-bold text-slate-800">{pct}%</span>
               </div>
-              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+
+              <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${row.barColor}`}
+                  className={`h-full rounded-full ${row.barColor} transition-all duration-500`}
                   style={{ width: `${pct}%` }}
-                  role="progressbar"
-                  aria-valuenow={pct}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
                 />
               </div>
             </div>

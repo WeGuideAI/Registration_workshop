@@ -87,7 +87,7 @@ export default function AdminDashboard({
     !!filters.source
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100/50 to-slate-50 text-slate-900">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900">
       <AdminHeader userEmail={userEmail} />
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-10">
@@ -128,7 +128,7 @@ export default function AdminDashboard({
 
           {/* Table or empty state */}
           {filtered.length === 0 && hasActiveFilters ? (
-            <div className="rounded-2xl border border-white/90 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xs">
               <EmptyState
                 icon={SearchX}
                 title="No registrations match your search filters"
