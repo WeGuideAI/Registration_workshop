@@ -81,7 +81,9 @@ export async function registerForSlot(
 
     if (!insertError && inserted?.id) {
       dbRegistrationId = inserted.id
+      console.log('Successfully saved registration to Supabase with ID:', inserted.id)
     } else if (insertError) {
+      console.error('Supabase registration insert error:', JSON.stringify(insertError, null, 2))
       const errMsg = (insertError.message || '').toLowerCase()
 
       // Handle genuine duplicate error from Postgres
@@ -106,7 +108,7 @@ export async function registerForSlot(
         errMsg.includes('relation')
       ) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data: legacyInserted } = await (supabase as any)
+        const { data: legacyInserted, error: legacyErr } = await (supabase as any)
           .from('registrations')
           .insert({
             full_name:        data.full_name,
@@ -122,12 +124,15 @@ export async function registerForSlot(
 
         if (legacyInserted?.id) {
           dbRegistrationId = legacyInserted.id
+          console.log('Successfully saved registration with fallback schema ID:', legacyInserted.id)
+        } else if (legacyErr) {
+          console.error('Fallback schema insert error:', JSON.stringify(legacyErr, null, 2))
         }
       }
     }
   } catch (supabaseErr) {
     // Non-blocking: Supabase unavailable / network error / placeholder configuration
-    console.warn('Supabase registration insert skipped or unavailable:', supabaseErr)
+    console.error('Supabase registration exception:', supabaseErr)
   }
 
   // 3. Fallback / Canonical ID generation
@@ -164,7 +169,11 @@ export async function registerForSlot(
     status:              'confirmed',
   }
 
-  await saveLocalRegistration(registrationRecord)
+  try {
+    await saveLocalRegistration(registrationRecord)
+  } catch {
+    // Local storage failure should never block registration response
+  }
 
   return {
     success: true,

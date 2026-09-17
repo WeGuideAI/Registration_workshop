@@ -61,7 +61,11 @@ async function fetchSupabaseRegistrations(
       .select('*')
       .order('created_at', { ascending: false })
 
-    if (error || !data) return []
+    if (error) {
+      console.error('Failed to fetch registrations from Supabase:', error)
+      return []
+    }
+    if (!data) return []
 
     return (data as RegistrationRow[]).map((r) => {
       let applicantType: Registration['applicantType'] = 'school_student'
