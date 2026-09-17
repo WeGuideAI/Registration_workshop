@@ -7,6 +7,7 @@ import { analytics } from '@/lib/utils/analytics'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
+import { cn } from '@/lib/utils/cn'
 import type {
   RegistrationFormData,
   BookingResult,
@@ -18,6 +19,7 @@ import { GraduationCap, BookOpen, Briefcase, ChevronRight, ChevronDown } from 'l
 
 interface RegistrationFormProps {
   onSuccess: (result: BookingResult) => void
+  dark?: boolean
 }
 
 type FieldErrors = Partial<Record<string, string>>
@@ -103,6 +105,33 @@ const colorMap = {
   },
 }
 
+const darkColorMap = {
+  blue: {
+    border: 'border-blue-500',
+    bg: 'bg-blue-950/80',
+    icon: 'text-blue-300 bg-blue-900/60 border-blue-400/40',
+    title: 'text-blue-300',
+    ring: 'ring-2 ring-blue-400 ring-offset-2 ring-offset-slate-900',
+    check: 'bg-blue-500',
+  },
+  purple: {
+    border: 'border-purple-500',
+    bg: 'bg-purple-950/80',
+    icon: 'text-purple-300 bg-purple-900/60 border-purple-400/40',
+    title: 'text-purple-300',
+    ring: 'ring-2 ring-purple-400 ring-offset-2 ring-offset-slate-900',
+    check: 'bg-purple-500',
+  },
+  orange: {
+    border: 'border-amber-500',
+    bg: 'bg-amber-950/80',
+    icon: 'text-amber-300 bg-amber-900/60 border-amber-400/40',
+    title: 'text-amber-300',
+    ring: 'ring-2 ring-amber-400 ring-offset-2 ring-offset-slate-900',
+    check: 'bg-amber-500',
+  },
+}
+
 const YEAR_OPTIONS = [
   { value: '1st Year',      label: '1st Year' },
   { value: '2nd Year',      label: '2nd Year' },
@@ -163,7 +192,7 @@ const FIELD_MAP: Record<string, string> = {
   child_school:          'childSchool',
 }
 
-export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
+export default function RegistrationForm({ onSuccess, dark = true }: RegistrationFormProps) {
   const [form, setForm]           = useState<RegistrationFormData>(EMPTY_FORM)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [globalError, setGlobalError] = useState<AppError | null>(null)
@@ -181,35 +210,28 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
   )
 
   const selectApplicantType = (type: ApplicantType) => {
-    setForm((prev) => ({
-      ...EMPTY_FORM,
-      // preserve common contact info already typed
-      fullName:     prev.fullName,
-      email:        prev.email,
-      phone:        prev.phone,
-      city:         prev.city,
-      hearAboutUs:  prev.hearAboutUs,
-      applicantType: type,
-    }))
-    setFieldErrors({})
-    setGlobalError(null)
+    setForm((prev) => ({ ...prev, applicantType: type }))
+    if (fieldErrors.applicantType) {
+      setFieldErrors((prev) => { const n = { ...prev }; delete n.applicantType; return n })
+    }
   }
 
   const buildPayload = (): Record<string, string | boolean> => {
     const payload: Record<string, string | boolean> = {
       full_name:        form.fullName.trim(),
-      email:            form.email.trim().toLowerCase(),
+      email:            form.email.trim(),
       phone:            form.phone.trim(),
       applicant_type:   form.applicantType,
       experience_level: form.experienceLevel,
       city:             form.city.trim(),
       hear_about_us:    form.hearAboutUs,
     }
+
     if (form.applicantType === 'school_student') {
-      payload.school_name            = form.schoolName.trim()
-      payload.grade                  = form.grade.trim()
-      payload.parent_guardian_name   = form.parentGuardianName.trim()
-      payload.parent_guardian_phone  = form.parentGuardianPhone.trim()
+      payload.school_name           = form.schoolName.trim()
+      payload.grade                 = form.grade
+      payload.parent_guardian_name  = form.parentGuardianName.trim()
+      payload.parent_guardian_phone = form.parentGuardianPhone.trim()
     } else if (form.applicantType === 'college_student') {
       payload.college_name   = form.collegeName.trim()
       payload.course         = form.course.trim()
@@ -277,14 +299,14 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
 
       {/* ── Step 1: Who Are You? ─────────────────────────────────── */}
       <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+        <p className={cn('text-xs font-bold uppercase tracking-wider mb-3', dark ? 'text-blue-400' : 'text-slate-500')}>
           Step 1 · Who is registering?
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {APPLICANT_CARDS.map((card) => {
             const Icon = card.icon
             const isSelected = selectedType === card.type
-            const c = colorMap[card.color]
+            const c = dark ? darkColorMap[card.color] : colorMap[card.color]
             return (
               <button
                 key={card.type}
@@ -292,14 +314,15 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                 id={`applicant-type-${card.type}`}
                 onClick={() => selectApplicantType(card.type)}
                 aria-pressed={isSelected}
-                className={`
-                  relative flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center
-                  transition-all duration-200 cursor-pointer select-none
-                  ${isSelected
+                className={cn(
+                  'relative flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center',
+                  'transition-all duration-200 cursor-pointer select-none',
+                  isSelected
                     ? `${c.border} ${c.bg} ${c.ring} shadow-md`
-                    : 'border-slate-200 bg-white/70 hover:border-slate-300 hover:shadow-sm hover:bg-white'
-                  }
-                `}
+                    : dark
+                      ? 'border-slate-700 bg-slate-800/80 hover:border-slate-500 hover:bg-slate-750 text-slate-200'
+                      : 'border-slate-200 bg-white/70 hover:border-slate-300 hover:shadow-sm hover:bg-white'
+                )}
               >
                 {isSelected && (
                   <span className={`absolute top-2.5 right-2.5 flex h-4 w-4 items-center justify-center rounded-full ${c.check}`}>
@@ -312,10 +335,10 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span>
-                  <span className={`block text-sm font-bold ${isSelected ? c.title : 'text-slate-900'}`}>
+                  <span className={cn('block text-sm font-bold', isSelected ? c.title : (dark ? 'text-white' : 'text-slate-900'))}>
                     {card.title}
                   </span>
-                  <span className="block text-[11px] text-slate-500 font-medium mt-0.5">
+                  <span className={cn('block text-[11px] font-medium mt-0.5', dark ? 'text-slate-400' : 'text-slate-500')}>
                     {card.subtitle}
                   </span>
                 </span>
@@ -324,7 +347,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
           })}
         </div>
         {fieldErrors.applicantType && (
-          <p className="mt-2 text-xs font-semibold text-red-600" role="alert">
+          <p className="mt-2 text-xs font-semibold text-red-500" role="alert">
             {fieldErrors.applicantType}
           </p>
         )}
@@ -334,14 +357,14 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
       {selectedType && (
         <>
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Your Details</span>
-            <div className="flex-1 h-px bg-slate-200" />
+            <div className={cn('flex-1 h-px', dark ? 'bg-slate-800' : 'bg-slate-200')} />
+            <span className={cn('text-xs font-bold uppercase tracking-wider', dark ? 'text-slate-400' : 'text-slate-400')}>Your Details</span>
+            <div className={cn('flex-1 h-px', dark ? 'bg-slate-800' : 'bg-slate-200')} />
           </div>
 
           {/* ── Step 2: Contact Information ──────────────────────── */}
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+            <p className={cn('text-xs font-bold uppercase tracking-wider mb-3', dark ? 'text-blue-400' : 'text-slate-500')}>
               Step 2 · Contact Information
             </p>
             <div className="space-y-4">
@@ -350,6 +373,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   label="Full Name"
                   type="text"
                   required
+                  dark={dark}
                   autoComplete="name"
                   placeholder="e.g. Arjun Sharma"
                   value={form.fullName}
@@ -360,6 +384,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   label="Email Address"
                   type="email"
                   required
+                  dark={dark}
                   autoComplete="email"
                   inputMode="email"
                   placeholder="you@example.com"
@@ -373,17 +398,19 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   label="Phone / WhatsApp"
                   type="tel"
                   required
+                  dark={dark}
                   autoComplete="tel"
                   inputMode="tel"
                   placeholder="+91 98765 43210"
                   value={form.phone}
                   onChange={(e) => setField('phone', e.target.value)}
                   error={fieldErrors.phone}
-                  hint="Session updates may be sent via WhatsApp"
+                  hint="Session updates & PDF pass will be sent to this number"
                 />
                 <Input
                   label="City / Area"
                   type="text"
+                  dark={dark}
                   autoComplete="address-level2"
                   placeholder="e.g. Palakkad, Coimbatore"
                   value={form.city}
@@ -396,7 +423,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
 
           {/* ── Step 3: Type-Specific Details ────────────────────── */}
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+            <p className={cn('text-xs font-bold uppercase tracking-wider mb-3', dark ? 'text-blue-400' : 'text-slate-500')}>
               Step 3 ·{' '}
               {selectedType === 'school_student'  && 'School Details'}
               {selectedType === 'college_student' && 'College Details'}
@@ -412,6 +439,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     label="School Name"
                     type="text"
                     required
+                    dark={dark}
                     placeholder="e.g. Government Higher Secondary School, Palakkad"
                     value={form.schoolName}
                     onChange={(e) => setField('schoolName', e.target.value)}
@@ -421,6 +449,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     <Select
                       label="Grade / Class"
                       required
+                      dark={dark}
                       value={form.grade}
                       onChange={(e) => setField('grade', e.target.value)}
                       error={fieldErrors.grade}
@@ -431,6 +460,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                       label="Parent / Guardian Name"
                       type="text"
                       required
+                      dark={dark}
                       placeholder="e.g. Suresh Kumar"
                       value={form.parentGuardianName}
                       onChange={(e) => setField('parentGuardianName', e.target.value)}
@@ -440,6 +470,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   <Input
                     label="Parent / Guardian Phone"
                     type="tel"
+                    dark={dark}
                     inputMode="tel"
                     placeholder="+91 98765 43210"
                     value={form.parentGuardianPhone}
@@ -457,6 +488,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     label="College / University Name"
                     type="text"
                     required
+                    dark={dark}
                     placeholder="e.g. Government Engineering College, Palakkad"
                     value={form.collegeName}
                     onChange={(e) => setField('collegeName', e.target.value)}
@@ -467,6 +499,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                       label="Course / Stream"
                       type="text"
                       required
+                      dark={dark}
                       placeholder="e.g. B.Tech CSE, BCA, B.Sc Physics"
                       value={form.course}
                       onChange={(e) => setField('course', e.target.value)}
@@ -475,6 +508,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     <Select
                       label="Year of Study"
                       required
+                      dark={dark}
                       value={form.yearOfStudy}
                       onChange={(e) => setField('yearOfStudy', e.target.value)}
                       error={fieldErrors.yearOfStudy}
@@ -485,6 +519,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   <Input
                     label="Areas of Tech Interest"
                     type="text"
+                    dark={dark}
                     placeholder="e.g. Machine Learning, Robotics, App Development"
                     value={form.techInterests}
                     onChange={(e) => setField('techInterests', e.target.value)}
@@ -501,6 +536,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     <Select
                       label="Occupation"
                       required
+                      dark={dark}
                       value={form.occupation}
                       onChange={(e) => setField('occupation', e.target.value)}
                       error={fieldErrors.occupation}
@@ -510,6 +546,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     <Input
                       label="Organization / Workplace"
                       type="text"
+                      dark={dark}
                       placeholder="e.g. KSEB, Infosys, Self-employed"
                       value={form.workplace}
                       onChange={(e) => setField('workplace', e.target.value)}
@@ -519,13 +556,12 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   </div>
 
                   {/* Child attending toggle */}
-                  <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+                  <div className={cn('rounded-2xl border p-4 transition-all', dark ? 'border-slate-700 bg-slate-800/60' : 'border-slate-200 bg-slate-50/60')}>
                     <button
                       type="button"
                       onClick={() => {
                         setField('hasChildAttending', !form.hasChildAttending)
                         if (form.hasChildAttending) {
-                          // clear child fields when unchecking
                           setForm((prev) => ({ ...prev, childName: '', childGrade: '', childSchool: '', hasChildAttending: false }))
                           setFieldErrors((prev) => {
                             const n = { ...prev }
@@ -538,31 +574,32 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                       className="flex w-full items-center justify-between cursor-pointer"
                     >
                       <span className="flex items-center gap-2.5">
-                        <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors ${
+                        <span className={cn('flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors',
                           form.hasChildAttending
-                            ? 'border-orange-500 bg-orange-500'
-                            : 'border-slate-300 bg-white'
-                        }`}>
+                            ? 'border-amber-500 bg-amber-500'
+                            : (dark ? 'border-slate-600 bg-slate-800' : 'border-slate-300 bg-white')
+                        )}>
                           {form.hasChildAttending && (
                             <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
                               <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           )}
                         </span>
-                        <span className="text-sm font-semibold text-slate-800">
+                        <span className={cn('text-sm font-semibold', dark ? 'text-slate-200' : 'text-slate-800')}>
                           I also have a school-age child attending with me
                         </span>
                       </span>
-                      <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${form.hasChildAttending ? 'rotate-180' : ''}`} aria-hidden="true" />
+                      <ChevronDown className={cn('h-4 w-4 text-slate-400 transition-transform duration-200', form.hasChildAttending ? 'rotate-180' : '')} aria-hidden="true" />
                     </button>
 
-                    {/* Child fields — slide open when checked */}
+                    {/* Child fields */}
                     {form.hasChildAttending && (
-                      <div className="mt-4 space-y-3 pt-4 border-t border-slate-200">
+                      <div className={cn('mt-4 space-y-3 pt-4 border-t', dark ? 'border-slate-700' : 'border-slate-200')}>
                         <Input
                           label="Child's Full Name"
                           type="text"
                           required
+                          dark={dark}
                           placeholder="e.g. Priya Sharma"
                           value={form.childName}
                           onChange={(e) => setField('childName', e.target.value)}
@@ -572,6 +609,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                           <Select
                             label="Child's Grade"
                             required
+                            dark={dark}
                             value={form.childGrade}
                             onChange={(e) => setField('childGrade', e.target.value)}
                             error={fieldErrors.childGrade}
@@ -581,11 +619,12 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                           <Input
                             label="Child's School"
                             type="text"
-                            required
-                            placeholder="e.g. St. Thomas School"
+                            dark={dark}
+                            placeholder="e.g. Kendriya Vidyalaya, Palakkad"
                             value={form.childSchool}
                             onChange={(e) => setField('childSchool', e.target.value)}
                             error={fieldErrors.childSchool}
+                            hint="Optional"
                           />
                         </div>
                       </div>
@@ -598,6 +637,7 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
               <Select
                 label="Familiarity with AI / Robotics"
                 required
+                dark={dark}
                 value={form.experienceLevel}
                 onChange={(e) => setField('experienceLevel', e.target.value as ExperienceLevel)}
                 error={fieldErrors.experienceLevel}
@@ -613,12 +653,13 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
 
           {/* ── Step 4: How Did You Hear About Us? ───────────────── */}
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+            <p className={cn('text-xs font-bold uppercase tracking-wider mb-3', dark ? 'text-blue-400' : 'text-slate-500')}>
               Step 4 · One Last Thing
             </p>
             <Select
               label="How did you hear about this workshop?"
               value={form.hearAboutUs}
+              dark={dark}
               onChange={(e) => setField('hearAboutUs', e.target.value)}
               error={fieldErrors.hearAboutUs}
               placeholder="Select an option"
@@ -631,34 +672,43 @@ export default function RegistrationForm({ onSuccess }: RegistrationFormProps) {
             <div
               role="alert"
               aria-live="assertive"
-              className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/90 p-4 shadow-sm backdrop-blur-sm"
+              className="flex items-start gap-3 rounded-xl border border-red-500/50 bg-red-950/80 p-4 shadow-sm backdrop-blur-sm"
             >
-              <span aria-hidden="true" className="mt-0.5 text-red-500 text-lg">⚠</span>
-              <p className="text-sm font-medium text-red-700">{globalError.message}</p>
+              <span aria-hidden="true" className="mt-0.5 text-red-400 text-lg">⚠</span>
+              <p className="text-sm font-medium text-red-200">{globalError.message}</p>
             </div>
           )}
 
-          {/* ── Submit ───────────────────────────────────────────── */}
-          <Button type="submit" variant="primary" size="lg" fullWidth loading={isSubmitting} className="mt-1">
+          {/* ── Submit Button ───────────────────────────────────────── */}
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={isSubmitting}
+            className="mt-2 py-4 text-base font-extrabold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.01] active:scale-[0.99] transition-all"
+          >
             {isSubmitting ? (
               'Confirming your registration…'
             ) : (
               <>
-                <span>Confirm Registration</span>
-                <ChevronRight className="h-4 w-4 ml-1" aria-hidden="true" />
+                <span>Confirm Registration &amp; Get PDF Pass</span>
+                <ChevronRight className="h-5 w-5 ml-1" aria-hidden="true" />
               </>
             )}
           </Button>
 
-          <p className="text-center text-xs text-slate-500">
+          <p className={cn('text-center text-xs', dark ? 'text-slate-400' : 'text-slate-500')}>
             By registering you agree to WeGuide&apos;s event terms.{' '}
-            <strong className="text-slate-700">No payment required. Free entry.</strong>
+            <strong className={dark ? 'text-emerald-400 font-bold' : 'text-slate-700'}>
+              100% Free Entry • Instant PDF Pass Download.
+            </strong>
           </p>
         </>
       )}
 
       {!selectedType && (
-        <p className="text-center text-sm text-slate-500 py-2">
+        <p className={cn('text-center text-sm py-2 font-medium', dark ? 'text-slate-400' : 'text-slate-500')}>
           👆 Select who is registering above to fill in your details.
         </p>
       )}

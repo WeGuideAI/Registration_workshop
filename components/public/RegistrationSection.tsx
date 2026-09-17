@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import RegistrationForm from './RegistrationForm'
 import RegistrationSuccess from './RegistrationSuccess'
-import { Sparkles, ShieldCheck, BookOpen, Gift } from 'lucide-react'
+import { Sparkles, ShieldCheck, Gift, Check, Zap, MapPin } from 'lucide-react'
 import type { BookingResult } from '@/lib/types/workshop'
+import { workshopConfig } from '@/lib/config/workshop'
 
 export default function RegistrationSection() {
   const [bookingResult, setBookingResult] = useState<BookingResult | null>(null)
@@ -13,10 +14,10 @@ export default function RegistrationSection() {
     return (
       <section
         id="register"
-        className="bg-slate-50 py-24 relative overflow-hidden"
+        className="bg-gradient-to-b from-slate-950 via-[#0B132B] to-slate-950 py-20 relative overflow-hidden border-y-2 border-blue-500/30 text-white"
         aria-labelledby="registration-heading"
       >
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
           <RegistrationSuccess
             result={bookingResult}
             onRegisterAnother={() => setBookingResult(null)}
@@ -29,128 +30,106 @@ export default function RegistrationSection() {
   return (
     <section
       id="register"
-      className="bg-gradient-to-b from-slate-50 via-blue-50/20 to-slate-50 py-24 border-t border-slate-200/80 relative overflow-hidden"
+      className="relative py-16 sm:py-24 bg-gradient-to-b from-slate-950 via-[#090e1a] to-slate-950 text-white border-y-2 border-blue-500/40 overflow-hidden"
       aria-labelledby="registration-heading"
     >
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[700px] w-[900px] rounded-full bg-blue-200/25 blur-[160px]" />
+      {/* ── Background Glows ────────────────────────────────────────── */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[850px] rounded-full bg-blue-600/20 blur-[150px]" />
+        <div className="absolute bottom-10 right-10 h-[350px] w-[350px] rounded-full bg-cyan-600/15 blur-[120px]" />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="mb-14 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/85 px-3.5 py-1 text-xs font-bold text-blue-700 uppercase tracking-widest mb-3 shadow-2xs">
-            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-            Free Community Entry
+      {/* ── Subtle Cyber Grid ───────────────────────────────────────── */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(59,130,246,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.15) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        {/* ── Section Header ─────────────────────────────────────────── */}
+        <div className="mb-10 sm:mb-12 text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/50 bg-cyan-950/70 px-4 py-1.5 text-xs font-black text-cyan-300 uppercase tracking-widest mb-4 shadow-lg shadow-cyan-500/20 backdrop-blur-md">
+            <Zap className="h-3.5 w-3.5 text-cyan-400 fill-cyan-400" />
+            Free Community Entry · Instant Pass
           </div>
+
           <h2
             id="registration-heading"
-            className="text-3xl font-black text-slate-900 sm:text-5xl tracking-tight"
+            className="text-3xl font-black text-white sm:text-5xl lg:text-6xl tracking-tight"
           >
-            Register for the Workshop
+            Claim Your Free Spot
           </h2>
-          <p className="mt-4 text-base text-slate-600 leading-relaxed font-normal">
+
+          <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
             Join us at{' '}
-            <strong>We Guide Office, 2nd Floor, Orchid Mall, Palakkad</strong>.
-            Fill in the form below to secure your free spot — no payment needed.
+            <strong className="text-white font-semibold">{workshopConfig.address.venue}</strong>.
+            Complete your registration below to secure your seat and receive your{' '}
+            <span className="text-blue-400 font-bold underline decoration-blue-500 underline-offset-4">
+              official entry confirmation and instant PDF pass
+            </span>.
           </p>
+
+          {/* Quick value badges */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-6">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 px-3.5 py-1 text-xs font-bold text-emerald-300 shadow-xs">
+              <Check className="h-3.5 w-3.5 text-emerald-400" /> 100% Free Entry
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-950/80 border border-blue-500/50 px-3.5 py-1 text-xs font-bold text-blue-300 shadow-xs">
+              <Sparkles className="h-3.5 w-3.5 text-blue-400" /> Live Robot Demos
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-950/80 border border-purple-500/50 px-3.5 py-1 text-xs font-bold text-purple-300 shadow-xs">
+              <Gift className="h-3.5 w-3.5 text-purple-400" /> Digital Certificate
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 border border-slate-700 px-3.5 py-1 text-xs font-bold text-slate-300 shadow-xs">
+              <MapPin className="h-3.5 w-3.5 text-red-400" /> Orchid Mall, Palakkad
+            </span>
+          </div>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_460px] lg:items-start">
-          {/* Left: Benefits panel */}
-          <div className="space-y-6">
-            {/* What you'll get */}
-            <div className="rounded-2xl border border-white/90 bg-white/80 p-7 shadow-sm shadow-slate-200/60 backdrop-blur-xl">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-5">
-                What You Get by Registering
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 text-blue-600">
-                    <ShieldCheck className="h-4.5 w-4.5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-900">Guaranteed Free Entry</p>
-                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                      Your name goes on our confirmation list. Walk in with confidence — no queue, no charges.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3.5">
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-50 border border-purple-100 text-purple-600">
-                    <BookOpen className="h-4.5 w-4.5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-900">Live AI & Robotics Demos</p>
-                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                      See real robots in action, AI-powered cameras, and get hands-on with smart machines.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3.5">
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600">
-                    <Gift className="h-4.5 w-4.5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-900">Certificate of Participation</p>
-                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                      All attendees receive a digital certificate to add to their portfolio or school record.
-                    </p>
-                  </div>
-                </div>
+        {/* ── THE REGISTRATION CARD (Prominent Midnight Tech Card) ──── */}
+        <div className="mx-auto max-w-3xl">
+          <div className="relative rounded-3xl border-2 border-blue-500/50 bg-gradient-to-b from-slate-900/98 via-slate-900 to-slate-950 shadow-2xl shadow-blue-900/50 backdrop-blur-2xl ring-4 ring-blue-500/15 overflow-hidden">
+            {/* Top Glowing Gradient Accent Stripe */}
+            <div className="h-2.5 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400" />
+
+            {/* Card Header */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-6 sm:px-8 py-5 bg-slate-850/60">
+              <div>
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">
+                  Workshop Entry Pass Form
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5 font-medium">
+                  Takes less than 2 minutes · Download official PDF pass on completion
+                </p>
+              </div>
+
+              <div className="inline-flex items-center gap-2 rounded-full bg-blue-950/80 border border-blue-500/40 px-3.5 py-1 text-xs font-bold text-blue-300">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                <span>Seats Open Now</span>
               </div>
             </div>
 
-            {/* Who attends cards */}
-            <div className="rounded-2xl border border-white/90 bg-white/80 p-7 shadow-sm shadow-slate-200/60 backdrop-blur-xl">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
-                Tailored for Every Learner
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3">
-                  <span className="text-xl">📚</span>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">School Students (Grades 1–12)</p>
-                    <p className="text-xs text-slate-500">Spark curiosity — discover what AI &amp; robots can do</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50/60 px-4 py-3">
-                  <span className="text-xl">🎓</span>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">College Students</p>
-                    <p className="text-xs text-slate-500">Explore career opportunities in AI, robotics &amp; tech</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/60 px-4 py-3">
-                  <span className="text-xl">👨‍👩‍👧</span>
-                  <div>
-                    <p className="text-sm font-bold text-slate-800">Parents &amp; Guardians</p>
-                    <p className="text-xs text-slate-500">Understand the world your child is growing up in</p>
-                  </div>
-                </div>
-              </div>
+            {/* Card Content with Form */}
+            <div className="p-6 sm:p-9">
+              <RegistrationForm onSuccess={setBookingResult} dark={true} />
             </div>
 
-            {/* Disclaimer */}
-            <p className="text-[11px] text-slate-400 leading-relaxed px-1">
-              WeGuide reserves the right to reschedule or modify sessions without prior notice.
-              Participation is subject to seat availability.
-            </p>
-          </div>
-
-          {/* Right: Registration Form in Frosted Glass Card */}
-          <div className="rounded-3xl border border-white/90 bg-white/80 p-6 sm:p-8 shadow-xl shadow-slate-200/60 backdrop-blur-2xl ring-1 ring-slate-900/5 lg:sticky lg:top-24">
-            <div className="mb-6">
-              <h3 className="text-xl font-bold text-slate-900">
-                Secure Your Free Spot
-              </h3>
-              <p className="text-xs text-slate-500 mt-1 font-normal">
-                Takes under 2 minutes · Confirmation sent to your email
-              </p>
+            {/* Card Footer Reassurance */}
+            <div className="border-t border-slate-800 bg-slate-950/70 px-6 py-4 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+                <span>Your information is confidential and secure. No payment needed.</span>
+              </span>
+              <span className="text-slate-500 font-medium">WeGuide AI Community Initiative</span>
             </div>
-
-            <RegistrationForm onSuccess={setBookingResult} />
           </div>
         </div>
       </div>

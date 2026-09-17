@@ -231,9 +231,9 @@ export default function Hero() {
       <div className="mt-12 flex justify-center animate-bounce" aria-hidden="true">
         <button
           type="button"
-          onClick={() => scrollTo('what-youll-learn')}
-          className="text-slate-400 hover:text-slate-700 transition-colors p-2 cursor-pointer"
-          aria-label="Scroll to curriculum"
+          onClick={() => scrollTo('register')}
+          className="text-slate-400 hover:text-blue-600 transition-colors p-2 cursor-pointer"
+          aria-label="Scroll to registration form"
         >
           <ChevronDown className="h-6 w-6" />
         </button>

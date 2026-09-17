@@ -17,8 +17,8 @@ export default function LandingPage() {
       <Navbar />
       <main>
         <Hero />
-        <WorkshopHighlights />
         <RegistrationSection />
+        <WorkshopHighlights />
       </main>
       <Footer />
     </div>
