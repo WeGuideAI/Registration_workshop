@@ -1,9 +1,9 @@
 'use client'
 
-import { CheckCircle2, Calendar, Clock, Mail, Hash, ArrowRight, MapPin } from 'lucide-react'
-import { formatSessionDate, formatSessionTime, formatRegistrationId } from '@/lib/utils/format'
+import { CheckCircle2, Mail, Hash, ArrowRight, MapPin, User } from 'lucide-react'
+import { formatRegistrationId } from '@/lib/utils/format'
 import { workshopConfig } from '@/lib/config/workshop'
-import type { BookingResult } from '@/lib/types/workshop'
+import type { BookingResult, ApplicantType } from '@/lib/types/workshop'
 import Button from '@/components/ui/Button'
 
 interface RegistrationSuccessProps {
@@ -16,7 +16,7 @@ function InfoRow({
   label,
   value,
 }: {
-  icon: typeof Calendar
+  icon: typeof Mail
   label: string
   value: string
 }) {
@@ -33,14 +33,39 @@ function InfoRow({
   )
 }
 
+const applicantTypeLabels: Record<ApplicantType, { label: string; emoji: string; message: string }> = {
+  school_student: {
+    label: 'School Student',
+    emoji: '📚',
+    message: "You're all set! Get ready to discover the amazing world of AI & Robotics.",
+  },
+  college_student: {
+    label: 'College Student',
+    emoji: '🎓',
+    message: 'Great! Explore how AI & Robotics can shape your career and future.',
+  },
+  professional: {
+    label: 'Parent / Working Professional',
+    emoji: '💼',
+    message: 'Wonderful! Come learn how AI & Robotics are transforming every industry.',
+  },
+}
+
 export default function RegistrationSuccess({
   result,
   onRegisterAnother,
 }: RegistrationSuccessProps) {
+  const typeInfo = applicantTypeLabels[result.applicantType] ?? {
+    label: 'Attendee',
+    emoji: '✅',
+    message: 'You are confirmed for the workshop!',
+  }
+
   return (
     <div className="mx-auto max-w-lg">
       {/* Success header */}
       <div className="mb-8 text-center">
+        <div className="mb-3 text-5xl">{typeInfo.emoji}</div>
         <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 shadow-sm">
           <CheckCircle2 className="h-8 w-8" aria-hidden="true" />
         </div>
@@ -48,8 +73,8 @@ export default function RegistrationSuccess({
           Registration Confirmed!
         </h2>
         <p className="text-slate-600 font-normal">
-          Welcome, <span className="text-slate-900 font-bold">{result.fullName}</span>.
-          Your seat has been reserved.
+          Welcome, <span className="text-slate-900 font-bold">{result.fullName}</span>!{' '}
+          {typeInfo.message}
         </p>
       </div>
 
@@ -65,24 +90,14 @@ export default function RegistrationSuccess({
           value={formatRegistrationId(result.registrationId)}
         />
         <InfoRow
+          icon={User}
+          label="Registered As"
+          value={typeInfo.label}
+        />
+        <InfoRow
           icon={Mail}
           label="Registered Email"
           value={result.email}
-        />
-        <InfoRow
-          icon={Calendar}
-          label="Session"
-          value={result.sessionTitle}
-        />
-        <InfoRow
-          icon={Calendar}
-          label="Date"
-          value={formatSessionDate(result.sessionDatetime)}
-        />
-        <InfoRow
-          icon={Clock}
-          label="Time"
-          value={`${formatSessionTime(result.sessionDatetime)} IST`}
         />
         <InfoRow
           icon={MapPin}

@@ -1,67 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import SlotSelector from './SlotSelector'
+import { useState } from 'react'
 import RegistrationForm from './RegistrationForm'
 import RegistrationSuccess from './RegistrationSuccess'
-import { Sparkles, ShieldCheck, Clock, BookOpen } from 'lucide-react'
-import type { PublicSlot, BookingResult } from '@/lib/types/workshop'
+import { Sparkles, ShieldCheck, BookOpen, Gift } from 'lucide-react'
+import type { BookingResult } from '@/lib/types/workshop'
 
-interface SlotRpcRow {
-  id: string
-  session_title: string
-  session_datetime: string
-  max_capacity: number
-  seats_filled: number
-  seats_remaining: number
-  is_sold_out: boolean
-}
-
-interface RegistrationSectionProps {
-  initialSlots: PublicSlot[]
-}
-
-function mapSlots(raw: SlotRpcRow[]): PublicSlot[] {
-  return raw.map((s) => ({
-    id:              s.id,
-    sessionTitle:    s.session_title,
-    sessionDatetime: s.session_datetime,
-    maxCapacity:     s.max_capacity,
-    seatsFilled:     Number(s.seats_filled),
-    seatsRemaining:  Number(s.seats_remaining),
-    isSoldOut:       s.is_sold_out,
-  }))
-}
-
-export default function RegistrationSection({ initialSlots }: RegistrationSectionProps) {
-  const [slots,          setSlots]          = useState<PublicSlot[]>(initialSlots)
-  const [selectedSlotId, setSelectedSlotId] = useState<string>('')
-  const [bookingResult,  setBookingResult]  = useState<BookingResult | null>(null)
-
-  const refreshSlots = useCallback(async () => {
-    const supabase = createClient()
-    if (!supabase) return
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data } = await (supabase as any).rpc('get_public_slots')
-    if (data) setSlots(mapSlots(data as SlotRpcRow[]))
-  }, [])
-
-  useEffect(() => {
-    const supabase = createClient()
-    if (!supabase) return
-
-    const channel = supabase
-      .channel('weguide-public-slots')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'registrations' },
-        () => { void refreshSlots() }
-      )
-      .subscribe()
-
-    return () => { void supabase.removeChannel(channel) }
-  }, [refreshSlots])
+export default function RegistrationSection() {
+  const [bookingResult, setBookingResult] = useState<BookingResult | null>(null)
 
   if (bookingResult) {
     return (
@@ -73,10 +19,7 @@ export default function RegistrationSection({ initialSlots }: RegistrationSectio
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <RegistrationSuccess
             result={bookingResult}
-            onRegisterAnother={() => {
-              setBookingResult(null)
-              setSelectedSlotId('')
-            }}
+            onRegisterAnother={() => setBookingResult(null)}
           />
         </div>
       </section>
@@ -105,82 +48,109 @@ export default function RegistrationSection({ initialSlots }: RegistrationSectio
             id="registration-heading"
             className="text-3xl font-black text-slate-900 sm:text-5xl tracking-tight"
           >
-            Reserve Your Free Seat
+            Register for the Workshop
           </h2>
           <p className="mt-4 text-base text-slate-600 leading-relaxed font-normal">
-            Sessions are held at <strong>We Guide Office, 2nd Floor, Orchid Mall, Palakkad</strong>.
-            Choose your preferred session timing below and enter your contact details.
+            Join us at{' '}
+            <strong>We Guide Office, 2nd Floor, Orchid Mall, Palakkad</strong>.
+            Fill in the form below to secure your free spot — no payment needed.
           </p>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_430px] lg:items-start">
-          {/* Left: Slot Selector + Assurance Checklist */}
-          <div className="space-y-8">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Step 1 &bull; Pick Your Preferred Batch Timing
-                </h3>
-                <span className="text-xs text-blue-600 font-semibold">Click a card to select</span>
+        <div className="grid gap-10 lg:grid-cols-[1fr_460px] lg:items-start">
+          {/* Left: Benefits panel */}
+          <div className="space-y-6">
+            {/* What you'll get */}
+            <div className="rounded-2xl border border-white/90 bg-white/80 p-7 shadow-sm shadow-slate-200/60 backdrop-blur-xl">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-5">
+                What You Get by Registering
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 text-blue-600">
+                    <ShieldCheck className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Guaranteed Free Entry</p>
+                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                      Your name goes on our confirmation list. Walk in with confidence — no queue, no charges.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3.5">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-50 border border-purple-100 text-purple-600">
+                    <BookOpen className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Live AI & Robotics Demos</p>
+                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                      See real robots in action, AI-powered cameras, and get hands-on with smart machines.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3.5">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600">
+                    <Gift className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Certificate of Participation</p>
+                    <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                      All attendees receive a digital certificate to add to their portfolio or school record.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <SlotSelector
-                slots={slots}
-                selectedSlotId={selectedSlotId}
-                onSelectSlot={setSelectedSlotId}
-              />
             </div>
 
-            {/* Workshop Assurance Cards */}
-            <div className="rounded-2xl border border-white/90 bg-white/75 p-6 shadow-sm shadow-slate-200/60 backdrop-blur-xl">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
-                Workshop Benefits
-              </h4>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="flex items-start gap-2.5">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+            {/* Who attends cards */}
+            <div className="rounded-2xl border border-white/90 bg-white/80 p-7 shadow-sm shadow-slate-200/60 backdrop-blur-xl">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
+                Tailored for Every Learner
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3">
+                  <span className="text-xl">📚</span>
                   <div>
-                    <p className="text-xs font-bold text-slate-900">Instant Seat Booking</p>
-                    <p className="text-[11px] text-slate-500">Booking pass on screen</p>
+                    <p className="text-sm font-bold text-slate-800">School Students (Grades 1–12)</p>
+                    <p className="text-xs text-slate-500">Spark curiosity — discover what AI &amp; robots can do</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2.5">
-                  <BookOpen className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+                <div className="flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50/60 px-4 py-3">
+                  <span className="text-xl">🎓</span>
                   <div>
-                    <p className="text-xs font-bold text-slate-900">Live Demonstrations</p>
-                    <p className="text-[11px] text-slate-500">Real robots in action</p>
+                    <p className="text-sm font-bold text-slate-800">College Students</p>
+                    <p className="text-xs text-slate-500">Explore career opportunities in AI, robotics &amp; tech</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-2.5">
-                  <Clock className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
+                <div className="flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50/60 px-4 py-3">
+                  <span className="text-xl">👨‍👩‍👧</span>
                   <div>
-                    <p className="text-xs font-bold text-slate-900">100% Free Entry</p>
-                    <p className="text-[11px] text-slate-500">No charges or fees</p>
+                    <p className="text-sm font-bold text-slate-800">Parents &amp; Guardians</p>
+                    <p className="text-xs text-slate-500">Understand the world your child is growing up in</p>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Disclaimer */}
+            <p className="text-[11px] text-slate-400 leading-relaxed px-1">
+              WeGuide reserves the right to reschedule or modify sessions without prior notice.
+              Participation is subject to seat availability.
+            </p>
           </div>
 
           {/* Right: Registration Form in Frosted Glass Card */}
           <div className="rounded-3xl border border-white/90 bg-white/80 p-6 sm:p-8 shadow-xl shadow-slate-200/60 backdrop-blur-2xl ring-1 ring-slate-900/5 lg:sticky lg:top-24">
             <div className="mb-6">
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">
-                Step 2 &bull; Attendee Info
-              </span>
               <h3 className="text-xl font-bold text-slate-900">
-                Enter Your Details
+                Secure Your Free Spot
               </h3>
               <p className="text-xs text-slate-500 mt-1 font-normal">
-                Workshop schedules and venue details will be dispatched to this email.
+                Takes under 2 minutes · Confirmation sent to your email
               </p>
             </div>
 
-            <RegistrationForm
-              slots={slots}
-              selectedSlotId={selectedSlotId}
-              onSelectSlot={setSelectedSlotId}
-              onSuccess={setBookingResult}
-            />
+            <RegistrationForm onSuccess={setBookingResult} />
           </div>
         </div>
       </div>

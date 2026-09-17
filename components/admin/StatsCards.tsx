@@ -1,23 +1,25 @@
-import { Users, CheckCircle2, Star, XCircle, BarChart3 } from 'lucide-react'
+import { Users, CheckCircle2, Star, XCircle, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import type { DashboardStats } from '@/lib/types/workshop'
 
 interface StatsCardsProps {
   stats: DashboardStats
-  totalCapacity: number
 }
 
 interface StatCard {
   label: string
-  value: number
+  value: number | string
   icon: typeof Users
   iconColor: string
   iconBg: string
   description?: string
 }
 
-export default function StatsCards({ stats, totalCapacity }: StatsCardsProps) {
-  const availableSeats = Math.max(totalCapacity - (stats.confirmed + stats.attended), 0)
+export default function StatsCards({ stats }: StatsCardsProps) {
+  const attendanceRate =
+    stats.confirmed + stats.attended > 0
+      ? Math.round((stats.attended / (stats.confirmed + stats.attended)) * 100)
+      : 0
 
   const cards: StatCard[] = [
     {
@@ -41,7 +43,7 @@ export default function StatsCards({ stats, totalCapacity }: StatsCardsProps) {
       icon:        Star,
       iconColor:   'text-amber-600',
       iconBg:      'bg-amber-50 border border-amber-100',
-      description: 'Marked present',
+      description: 'Marked present at venue',
     },
     {
       label:       'Cancelled',
@@ -49,15 +51,15 @@ export default function StatsCards({ stats, totalCapacity }: StatsCardsProps) {
       icon:        XCircle,
       iconColor:   'text-rose-600',
       iconBg:      'bg-rose-50 border border-rose-100',
-      description: 'Seat released',
+      description: 'Registration cancelled',
     },
     {
-      label:       'Seats Available',
-      value:       availableSeats,
-      icon:        BarChart3,
+      label:       'Attendance Rate',
+      value:       `${attendanceRate}%`,
+      icon:        TrendingUp,
       iconColor:   'text-purple-600',
       iconBg:      'bg-purple-50 border border-purple-100',
-      description: `of ${totalCapacity} total capacity`,
+      description: 'Of confirmed registrations',
     },
   ]
 
@@ -68,7 +70,7 @@ export default function StatsCards({ stats, totalCapacity }: StatsCardsProps) {
         return (
           <div
             key={card.label}
-            className="rounded-2xl border border-white/90 bg-white/80 p-4.5 shadow-sm shadow-slate-200/60 backdrop-blur-xl ring-1 ring-slate-900/5"
+            className="rounded-2xl border border-white/90 bg-white/80 p-4 shadow-sm shadow-slate-200/60 backdrop-blur-xl ring-1 ring-slate-900/5"
           >
             <div className="flex items-start justify-between mb-3">
               <div className={cn('rounded-xl p-2.5 shadow-2xs', card.iconBg)}>
@@ -76,7 +78,7 @@ export default function StatsCards({ stats, totalCapacity }: StatsCardsProps) {
               </div>
             </div>
             <p className="text-2xl font-black text-slate-900 tabular-nums mb-0.5 tracking-tight">
-              {card.value.toLocaleString()}
+              {card.value}
             </p>
             <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">{card.label}</p>
             {card.description && (

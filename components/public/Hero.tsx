@@ -109,7 +109,7 @@ export default function Hero() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-600" />
             </span>
             <span className="text-xs sm:text-sm font-semibold text-emerald-800">
-              Free Community Workshop &bull; Open to Everyone
+              Free Community Workshop &bull; Open to All
             </span>
           </div>
 
@@ -149,9 +149,9 @@ export default function Hero() {
         </p>
 
         <p className="mx-auto max-w-xl text-sm sm:text-base text-slate-700 mb-9 font-medium">
-          Join this friendly, beginner-friendly awareness workshop. We explain modern technology
+          Join this friendly, beginner-friendly awareness workshop at WeGuide, Palakkad. We explain modern technology
           in <span className="text-blue-600 font-bold underline decoration-blue-300 decoration-2 underline-offset-4">simple, everyday words</span> —
-          with live demonstrations you can watch and understand.
+          with live demonstrations you can watch and understand. <strong className="text-slate-800">Free for everyone.</strong>
         </p>
 
         {/* ── 3 Big Reassurance Cards ──────────────────────────────────── */}

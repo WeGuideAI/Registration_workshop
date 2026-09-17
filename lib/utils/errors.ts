@@ -2,25 +2,16 @@ import type { AppError, AppErrorCode } from '@/lib/types/workshop'
 
 // Map raw DB error message substrings → typed error codes
 const ERROR_PATTERNS: Array<[string, AppErrorCode]> = [
-  ['SLOT_FULL', 'SLOT_FULL'],
   ['DUPLICATE_REGISTRATION', 'DUPLICATE_REGISTRATION'],
-  ['SLOT_INACTIVE', 'SLOT_INACTIVE'],
-  ['SLOT_NOT_FOUND', 'SLOT_NOT_FOUND'],
-  ['VALIDATION_ERROR', 'VALIDATION_ERROR'],
-  ['UNAUTHORIZED', 'UNAUTHORIZED'],
-  ['unique_violation', 'DUPLICATE_REGISTRATION'],
+  ['VALIDATION_ERROR',       'VALIDATION_ERROR'],
+  ['UNAUTHORIZED',           'UNAUTHORIZED'],
+  ['unique_violation',       'DUPLICATE_REGISTRATION'],
 ]
 
 // User-facing messages — never expose DB internals
 const USER_MESSAGES: Record<AppErrorCode, string> = {
-  SLOT_FULL:
-    'This session filled up while you were registering. Please choose another available session.',
   DUPLICATE_REGISTRATION:
-    'You are already registered for this session. Check your email for your confirmation.',
-  SLOT_INACTIVE:
-    'This session is no longer accepting registrations.',
-  SLOT_NOT_FOUND:
-    'The selected session could not be found. Please refresh and try again.',
+    'You are already registered. Check your email for your confirmation.',
   VALIDATION_ERROR:
     'Please check your information and try again.',
   UNAUTHORIZED:
