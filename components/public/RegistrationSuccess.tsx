@@ -1,8 +1,23 @@
 'use client'
 
-import { CheckCircle2, Mail, Hash, ArrowRight, MapPin, User } from 'lucide-react'
+import { useState } from 'react'
+import {
+  CheckCircle2,
+  Mail,
+  Hash,
+  ArrowRight,
+  MapPin,
+  User,
+  Phone,
+  FileDown,
+  Check,
+  Building2,
+  Briefcase,
+  GraduationCap,
+} from 'lucide-react'
 import { formatRegistrationId } from '@/lib/utils/format'
 import { workshopConfig } from '@/lib/config/workshop'
+import { generateRegistrationPDF } from '@/lib/utils/pdf'
 import type { BookingResult, ApplicantType } from '@/lib/types/workshop'
 import Button from '@/components/ui/Button'
 
@@ -55,10 +70,27 @@ export default function RegistrationSuccess({
   result,
   onRegisterAnother,
 }: RegistrationSuccessProps) {
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [downloaded, setDownloaded] = useState(false)
+
   const typeInfo = applicantTypeLabels[result.applicantType] ?? {
     label: 'Attendee',
     emoji: '✅',
     message: 'You are confirmed for the workshop!',
+  }
+
+  const handleDownloadPDF = async () => {
+    try {
+      setIsDownloading(true)
+      // Small tick for smooth button state transition
+      await new Promise((r) => setTimeout(r, 150))
+      generateRegistrationPDF(result)
+      setDownloaded(true)
+    } catch (err) {
+      console.error('Failed to generate PDF pass:', err)
+    } finally {
+      setIsDownloading(false)
+    }
   }
 
   return (
@@ -80,9 +112,14 @@ export default function RegistrationSuccess({
 
       {/* Confirmation card (Frosted Glass) */}
       <div className="rounded-3xl border border-white/90 bg-white/85 p-7 shadow-xl shadow-slate-200/60 backdrop-blur-2xl ring-1 ring-slate-900/5 mb-6">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">
-          Booking Pass Details
-        </h3>
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3.5 mb-2">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500">
+            Booking Pass Details
+          </h3>
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700">
+            <Check className="h-3 w-3" /> Confirmed
+          </span>
+        </div>
 
         <InfoRow
           icon={Hash}
@@ -99,6 +136,34 @@ export default function RegistrationSuccess({
           label="Registered Email"
           value={result.email}
         />
+        {result.phone && (
+          <InfoRow
+            icon={Phone}
+            label="Phone Number"
+            value={result.phone}
+          />
+        )}
+        {result.schoolName && (
+          <InfoRow
+            icon={GraduationCap}
+            label="School"
+            value={`${result.schoolName}${result.grade ? ` (Class ${result.grade})` : ''}`}
+          />
+        )}
+        {result.collegeName && (
+          <InfoRow
+            icon={Building2}
+            label="College / Degree"
+            value={`${result.collegeName}${result.course ? ` • ${result.course}` : ''}`}
+          />
+        )}
+        {result.occupation && (
+          <InfoRow
+            icon={Briefcase}
+            label="Occupation / Workplace"
+            value={`${result.occupation}${result.workplace ? ` at ${result.workplace}` : ''}`}
+          />
+        )}
         <InfoRow
           icon={MapPin}
           label="Venue"
@@ -106,11 +171,47 @@ export default function RegistrationSuccess({
         />
       </div>
 
+      {/* Download PDF Pass CTA Button */}
+      <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50/90 to-indigo-50/70 p-5 mb-6 shadow-sm">
+        <div className="flex items-start gap-3.5 mb-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-500/30">
+            <FileDown className="h-5 w-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-slate-900">Your Official Pass is Ready</h4>
+            <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+              Download your personalized PDF pass with all registration details, venue directions, and check-in instructions.
+            </p>
+          </div>
+        </div>
+
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={isDownloading}
+          onClick={handleDownloadPDF}
+          className="shadow-lg shadow-blue-500/25 text-base font-bold py-3.5"
+        >
+          {downloaded ? (
+            <>
+              <Check className="h-5 w-5 mr-1 text-emerald-300" aria-hidden="true" />
+              Download PDF Pass Again
+            </>
+          ) : (
+            <>
+              <FileDown className="h-5 w-5 mr-1" aria-hidden="true" />
+              Download Registration Pass (PDF)
+            </>
+          )}
+        </Button>
+      </div>
+
       {/* Save info note */}
-      <div className="rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-3.5 mb-6 shadow-2xs">
-        <p className="text-xs sm:text-sm text-amber-900 font-medium">
-          <strong>Save this confirmation.</strong> Screenshot or note down your
-          Registration ID for quick check-in at the venue.
+      <div className="rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-3 mb-6 shadow-2xs">
+        <p className="text-xs text-amber-900 font-medium leading-relaxed">
+          <strong>Tip:</strong> Keep the downloaded PDF on your phone or save your
+          Registration ID (<strong>{formatRegistrationId(result.registrationId)}</strong>) for quick verification at the entrance.
         </p>
       </div>
 
@@ -122,10 +223,17 @@ export default function RegistrationSuccess({
           className="text-blue-600 font-semibold hover:underline"
         >
           {workshopConfig.supportEmail}
+        </a>{' '}
+        or call{' '}
+        <a
+          href={`tel:${workshopConfig.phoneRaw}`}
+          className="text-blue-600 font-semibold hover:underline"
+        >
+          {workshopConfig.contactPhone}
         </a>
       </p>
 
-      {/* Actions */}
+      {/* Secondary Actions */}
       <div className="flex flex-col gap-3">
         <Button
           variant="secondary"
@@ -139,7 +247,7 @@ export default function RegistrationSuccess({
           <button
             type="button"
             onClick={onRegisterAnother}
-            className="text-xs font-medium text-slate-500 hover:text-slate-800 underline underline-offset-2 transition-colors cursor-pointer"
+            className="text-xs font-medium text-slate-500 hover:text-slate-800 underline underline-offset-2 transition-colors cursor-pointer py-1"
           >
             Register another attendee
           </button>

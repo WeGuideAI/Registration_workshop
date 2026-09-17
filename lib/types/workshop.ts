@@ -99,8 +99,27 @@ export interface BookingResult {
   registrationId: string
   fullName: string
   email: string
+  phone?: string
   applicantType: ApplicantType
   status: RegistrationStatus
+  experienceLevel?: ExperienceLevel
+  city?: string
+  hearAboutUs?: string
+  schoolName?: string
+  grade?: string
+  parentGuardianName?: string
+  parentGuardianPhone?: string
+  collegeName?: string
+  course?: string
+  yearOfStudy?: string
+  techInterests?: string
+  occupation?: string
+  workplace?: string
+  hasChildAttending?: boolean
+  childName?: string
+  childGrade?: string
+  childSchool?: string
+  createdAt?: string
 }
 
 // ── Errors ───────────────────────────────────────────────────────
