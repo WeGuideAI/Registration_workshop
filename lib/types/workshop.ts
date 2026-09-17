@@ -1,13 +1,16 @@
 // Application-level domain types (distinct from raw DB types)
 
 export type RegistrationStatus = 'confirmed' | 'attended' | 'cancelled'
-export type UserRole = 'Student' | 'Working Professional' | 'Hobbyist/Other'
+
+// Applicant types for the dynamic form
+export type ApplicantType = 'school_student' | 'college_student' | 'professional'
+
 export type ExperienceLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
-export const USER_ROLES: UserRole[] = [
-  'Student',
-  'Working Professional',
-  'Hobbyist/Other',
+export const APPLICANT_TYPES: ApplicantType[] = [
+  'school_student',
+  'college_student',
+  'professional',
 ]
 
 export const EXPERIENCE_LEVELS: ExperienceLevel[] = [
@@ -22,30 +25,6 @@ export const REGISTRATION_STATUSES: RegistrationStatus[] = [
   'cancelled',
 ]
 
-// ── Public (no PII leakage) ──────────────────────────────────────
-export interface PublicSlot {
-  id: string
-  sessionTitle: string
-  sessionDatetime: string
-  maxCapacity: number
-  seatsFilled: number
-  seatsRemaining: number
-  isSoldOut: boolean
-}
-
-// ── Admin: full slot with write fields ──────────────────────────
-export interface AdminSlot {
-  id: string
-  sessionTitle: string
-  sessionDatetime: string
-  maxCapacity: number
-  isActive: boolean
-  seatsFilled: number
-  seatsRemaining: number
-  createdAt: string
-  updatedAt: string
-}
-
 // ── Registrations ────────────────────────────────────────────────
 export interface Registration {
   id: string
@@ -54,42 +33,79 @@ export interface Registration {
   fullName: string
   email: string
   phone: string
-  role: UserRole
-  organization: string
+  applicantType: ApplicantType
+  city?: string
+  hearAboutUs?: string
   experienceLevel: ExperienceLevel
-  slotId: string
+
+  // School student specific
+  schoolName?: string
+  grade?: string
+  parentGuardianName?: string
+  parentGuardianPhone?: string
+
+  // College student specific
+  collegeName?: string
+  course?: string
+  yearOfStudy?: string
+  techInterests?: string
+
+  // Professional (parent / working professional) specific
+  occupation?: string
+  workplace?: string
+  hasChildAttending?: boolean
+  childName?: string
+  childGrade?: string
+  childSchool?: string
+
   status: RegistrationStatus
-  // joined from slots
-  sessionTitle?: string
-  sessionDatetime?: string
 }
 
 // ── Form / submission ────────────────────────────────────────────
 export interface RegistrationFormData {
+  // Common fields
   fullName: string
   email: string
   phone: string
-  role: UserRole | ''
-  organization: string
+  applicantType: ApplicantType | ''
+  city: string
+  hearAboutUs: string
+
+  // School student specific
+  schoolName: string
+  grade: string
+  parentGuardianName: string
+  parentGuardianPhone: string
+
+  // College student specific
+  collegeName: string
+  course: string
+  yearOfStudy: string
+  techInterests: string
+
+  // Professional (parent / working professional) specific
+  occupation: string
+  workplace: string
+  hasChildAttending: boolean
+  childName: string
+  childGrade: string
+  childSchool: string
+
+  // Common end field
   experienceLevel: ExperienceLevel | ''
-  slotId: string
 }
 
 export interface BookingResult {
   registrationId: string
   fullName: string
   email: string
-  sessionTitle: string
-  sessionDatetime: string
+  applicantType: ApplicantType
   status: RegistrationStatus
 }
 
 // ── Errors ───────────────────────────────────────────────────────
 export type AppErrorCode =
-  | 'SLOT_FULL'
   | 'DUPLICATE_REGISTRATION'
-  | 'SLOT_INACTIVE'
-  | 'SLOT_NOT_FOUND'
   | 'VALIDATION_ERROR'
   | 'UNAUTHORIZED'
   | 'NETWORK_ERROR'

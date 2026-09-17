@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, RefreshCw, Users } from 'lucide-react'
 import { updateRegistrationStatus } from '@/app/actions/admin'
-import { formatSessionDate, formatSessionTime, formatRegistrationId } from '@/lib/utils/format'
+import { formatRegistrationId } from '@/lib/utils/format'
 import Badge from '@/components/ui/Badge'
 import EmptyState from '@/components/ui/EmptyState'
 import type { Registration, RegistrationStatus } from '@/lib/types/workshop'
@@ -119,16 +119,7 @@ export default function AttendeeTable({
                 Phone
               </th>
               <th scope="col" className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Organization
-              </th>
-              <th scope="col" className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Role
-              </th>
-              <th scope="col" className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Experience
-              </th>
-              <th scope="col" className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Session
+                Applicant Type
               </th>
               <th scope="col" className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Registered
@@ -161,36 +152,10 @@ export default function AttendeeTable({
                 <td className="whitespace-nowrap px-4 py-3 text-slate-600 font-medium">
                   {reg.phone}
                 </td>
-                <td className="px-4 py-3 text-slate-600 max-w-[160px] truncate font-medium">
-                  {reg.organization}
-                </td>
                 <td className="whitespace-nowrap px-4 py-3">
-                  <Badge variant="default">{reg.role}</Badge>
-                </td>
-                <td className="whitespace-nowrap px-4 py-3">
-                  <Badge
-                    variant={
-                      reg.experienceLevel === 'Advanced'
-                        ? 'info'
-                        : reg.experienceLevel === 'Intermediate'
-                          ? 'warning'
-                          : 'muted'
-                    }
-                  >
-                    {reg.experienceLevel}
+                  <Badge variant="default">
+                    {reg.applicantType.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                   </Badge>
-                </td>
-                <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
-                  <div>
-                    <p className="text-xs text-slate-900 font-bold">{reg.sessionTitle}</p>
-                    {reg.sessionDatetime && (
-                      <p className="text-[11px] text-slate-500 font-medium">
-                        {formatSessionDate(reg.sessionDatetime)}
-                        {' · '}
-                        {formatSessionTime(reg.sessionDatetime)}
-                      </p>
-                    )}
-                  </div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-xs text-slate-500 font-medium">
                   {new Date(reg.createdAt).toLocaleDateString('en-IN', {

@@ -2,19 +2,18 @@
 
 import { Search, X } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
-import type { AdminSlot, ExperienceLevel, RegistrationStatus } from '@/lib/types/workshop'
+import type { ApplicantType, ExperienceLevel, RegistrationStatus } from '@/lib/types/workshop'
 
 export interface FilterState {
   search:          string
-  slotId:          string
+  applicantType:   ApplicantType | ''
   experienceLevel: ExperienceLevel | ''
   status:          RegistrationStatus | ''
 }
 
 interface FiltersProps {
-  filters: FilterState
+  filters:  FilterState
   onChange: (filters: FilterState) => void
-  slots: AdminSlot[]
 }
 
 function FilterSelect({
@@ -50,15 +49,15 @@ function FilterSelect({
   )
 }
 
-export default function Filters({ filters, onChange, slots }: FiltersProps) {
+export default function Filters({ filters, onChange }: FiltersProps) {
   const hasActiveFilters =
     !!filters.search ||
-    !!filters.slotId ||
+    !!filters.applicantType ||
     !!filters.experienceLevel ||
     !!filters.status
 
   const clearAll = () =>
-    onChange({ search: '', slotId: '', experienceLevel: '', status: '' })
+    onChange({ search: '', applicantType: '', experienceLevel: '', status: '' })
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -70,7 +69,7 @@ export default function Filters({ filters, onChange, slots }: FiltersProps) {
         />
         <input
           type="search"
-          placeholder="Search by name, email, or organization…"
+          placeholder="Search by name or email…"
           value={filters.search}
           onChange={(e) => onChange({ ...filters, search: e.target.value })}
           className={cn(
@@ -82,15 +81,16 @@ export default function Filters({ filters, onChange, slots }: FiltersProps) {
         />
       </div>
 
-      {/* Session filter */}
+      {/* Applicant type filter */}
       <FilterSelect
-        label="All Sessions"
-        value={filters.slotId}
-        onChange={(v) => onChange({ ...filters, slotId: v })}
-        options={slots.map((s) => ({
-          value: s.id,
-          label: s.sessionTitle,
-        }))}
+        label="All Types"
+        value={filters.applicantType}
+        onChange={(v) => onChange({ ...filters, applicantType: v as ApplicantType | '' })}
+        options={[
+          { value: 'school_student',  label: 'School Students' },
+          { value: 'college_student', label: 'College Students' },
+          { value: 'professional',    label: 'Parents / Professionals' },
+        ]}
       />
 
       {/* Experience filter */}

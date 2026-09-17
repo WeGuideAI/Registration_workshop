@@ -24,26 +24,6 @@ async function requireAdmin() {
   return supabase as any
 }
 
-export async function toggleSlotActive(
-  slotId: string,
-  isActive: boolean
-): Promise<ActionResult<void>> {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const supabase: any = await requireAdmin()
-    const { error } = await supabase
-      .from('slots')
-      .update({ is_active: isActive })
-      .eq('id', slotId)
-
-    if (error) return { success: false, error: parseSupabaseError(error) }
-    revalidatePath('/admin')
-    return { success: true, data: undefined }
-  } catch (err) {
-    return { success: false, error: parseSupabaseError(err) }
-  }
-}
-
 export async function updateRegistrationStatus(
   registrationId: string,
   status: RegistrationStatus

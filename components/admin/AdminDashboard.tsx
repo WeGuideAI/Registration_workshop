@@ -3,46 +3,41 @@
 import { useState, useMemo } from 'react'
 import AdminHeader from './AdminHeader'
 import StatsCards from './StatsCards'
-import SlotManagement from './SlotManagement'
+import RegistrationsByType from './SlotManagement'
 import Filters, { type FilterState } from './Filters'
 import AttendeeTable from './AttendeeTable'
 import ExportButton from './ExportButton'
 import EmptyState from '@/components/ui/EmptyState'
 import { SearchX } from 'lucide-react'
-import type { AdminSlot, Registration, DashboardStats } from '@/lib/types/workshop'
+import type { Registration, DashboardStats } from '@/lib/types/workshop'
 
 interface AdminDashboardProps {
-  userEmail:            string
-  slots:                AdminSlot[]
-  registrations:        Registration[]
-  stats:                DashboardStats
+  userEmail:     string
+  registrations: Registration[]
+  stats:         DashboardStats
 }
 
 export default function AdminDashboard({
   userEmail,
-  slots,
   registrations,
   stats,
 }: AdminDashboardProps) {
   const [filters, setFilters] = useState<FilterState>({
     search:          '',
-    slotId:          '',
+    applicantType:   '',
     experienceLevel: '',
     status:          '',
   })
-
-  const totalCapacity = slots.reduce((sum, s) => sum + s.maxCapacity, 0)
 
   const filtered = useMemo(() => {
     const q = filters.search.toLowerCase().trim()
     return registrations.filter((r) => {
       if (q && !(
         r.fullName.toLowerCase().includes(q) ||
-        r.email.toLowerCase().includes(q) ||
-        r.organization.toLowerCase().includes(q)
+        r.email.toLowerCase().includes(q)
       )) return false
 
-      if (filters.slotId && r.slotId !== filters.slotId) return false
+      if (filters.applicantType && r.applicantType !== filters.applicantType) return false
 
       if (filters.experienceLevel && r.experienceLevel !== filters.experienceLevel)
         return false
@@ -55,7 +50,7 @@ export default function AdminDashboard({
 
   const hasActiveFilters =
     !!filters.search ||
-    !!filters.slotId ||
+    !!filters.applicantType ||
     !!filters.experienceLevel ||
     !!filters.status
 
@@ -66,11 +61,11 @@ export default function AdminDashboard({
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-10">
         {/* Stats */}
         <section aria-label="Registration statistics">
-          <StatsCards stats={stats} totalCapacity={totalCapacity} />
+          <StatsCards stats={stats} />
         </section>
 
-        {/* Session capacity */}
-        <SlotManagement slots={slots} />
+        {/* Breakdown by applicant type */}
+        <RegistrationsByType registrations={registrations} />
 
         {/* Attendee directory */}
         <section aria-labelledby="attendees-heading">
@@ -92,11 +87,7 @@ export default function AdminDashboard({
 
           {/* Filters */}
           <div className="mb-4">
-            <Filters
-              filters={filters}
-              onChange={setFilters}
-              slots={slots}
-            />
+            <Filters filters={filters} onChange={setFilters} />
           </div>
 
           {/* Table or empty state */}

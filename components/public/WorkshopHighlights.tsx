@@ -13,6 +13,12 @@ import {
   Briefcase,
   Heart,
   ArrowRight,
+  TrendingUp,
+  Stethoscope,
+  Factory,
+  Car,
+  Cpu,
+  Globe,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -28,6 +34,21 @@ interface AudienceItem {
   icon: LucideIcon
   label: string
   desc: string
+}
+
+interface ImpactStat {
+  value: string
+  label: string
+  sub: string
+  color: 'blue' | 'purple' | 'emerald' | 'amber'
+}
+
+interface WhyCard {
+  icon: LucideIcon
+  sector: string
+  title: string
+  description: string
+  color: 'blue' | 'purple' | 'emerald' | 'orange'
 }
 
 const aiHighlights: HighlightCard[] = [
@@ -63,7 +84,7 @@ const roboticsHighlights: HighlightCard[] = [
     title: 'The Brain Inside a Robot',
     subtitle: 'The Tiny Controller',
     description:
-      'Discover the small, affordable computer chips that act as the robot’s brain — receiving information and telling every part what to do next.',
+      "Discover the small, affordable computer chips that act as the robot's brain \u2014 receiving information and telling every part what to do next.",
     simplePoints: ['Small Computer Chips', 'Giving Instructions', 'Connecting Parts'],
   },
   {
@@ -90,6 +111,98 @@ const audience: AudienceItem[] = [
   { icon: Heart,         label: 'Parents & Families', desc: 'Understand the technologies your children are growing up with and talk about' },
   { icon: Briefcase,     label: 'Working Professionals', desc: 'Learn how automation and AI are shaping modern workplaces and businesses' },
 ]
+
+const impactStats: ImpactStat[] = [
+  {
+    value: '97M+',
+    label: 'New AI Jobs by 2025',
+    sub: 'World Economic Forum',
+    color: 'blue',
+  },
+  {
+    value: '$15.7T',
+    label: 'AI Contribution to Global GDP by 2030',
+    sub: 'PwC Report',
+    color: 'purple',
+  },
+  {
+    value: '85%',
+    label: 'of Companies Now Use AI',
+    sub: 'IBM Global AI Report',
+    color: 'emerald',
+  },
+  {
+    value: '3x',
+    label: 'Higher Salary for AI-Skilled Workers',
+    sub: 'LinkedIn Workforce Report',
+    color: 'amber',
+  },
+]
+
+const whyCards: WhyCard[] = [
+  {
+    icon: Stethoscope,
+    sector: 'Healthcare',
+    title: 'AI Saves Lives Daily',
+    description:
+      'AI diagnoses cancer in X-rays faster and more accurately than doctors. Robotic surgery makes operations safer, with smaller cuts and faster recovery.',
+    color: 'blue',
+  },
+  {
+    icon: GraduationCap,
+    sector: 'Education',
+    title: 'Personalized Learning',
+    description:
+      'AI tutors adapt lessons to each student\'s pace. Schools worldwide use robots to teach programming, science, and creativity — even in rural areas.',
+    color: 'purple',
+  },
+  {
+    icon: Factory,
+    sector: 'Manufacturing',
+    title: 'Smart Factories',
+    description:
+      'Robots work 24/7 assembling products with zero errors. In India alone, the manufacturing sector is rapidly adopting AI to stay competitive globally.',
+    color: 'orange',
+  },
+  {
+    icon: Car,
+    sector: 'Transport',
+    title: 'Self-Driving Revolution',
+    description:
+      'AI powers navigation apps, traffic management, and self-driving vehicles. India\'s logistics and delivery sectors are already deploying autonomous bots.',
+    color: 'emerald',
+  },
+  {
+    icon: Globe,
+    sector: 'Agriculture',
+    title: 'AI-Powered Farming',
+    description:
+      'Drone robots monitor crops, detect diseases early, and optimize water use. Kerala farmers are already using AI to improve yield and reduce waste.',
+    color: 'blue',
+  },
+  {
+    icon: Cpu,
+    sector: 'Technology Careers',
+    title: 'Tomorrow\'s Hottest Jobs',
+    description:
+      'AI Engineer, Robotics Programmer, Data Scientist — these are India\'s fastest-growing careers. Learning the basics today puts students years ahead.',
+    color: 'purple',
+  },
+]
+
+const statColorMap = {
+  blue:   { bg: 'bg-blue-50', border: 'border-blue-200', val: 'text-blue-700', sub: 'text-blue-600' },
+  purple: { bg: 'bg-purple-50', border: 'border-purple-200', val: 'text-purple-700', sub: 'text-purple-600' },
+  emerald:{ bg: 'bg-emerald-50', border: 'border-emerald-200', val: 'text-emerald-700', sub: 'text-emerald-600' },
+  amber:  { bg: 'bg-amber-50', border: 'border-amber-200', val: 'text-amber-700', sub: 'text-amber-600' },
+}
+
+const whyColorMap = {
+  blue:   { icon: 'bg-blue-50 border-blue-200 text-blue-600', border: 'hover:border-blue-300 hover:shadow-blue-500/10', tag: 'bg-blue-50/90 text-blue-700 border-blue-200/70' },
+  purple: { icon: 'bg-purple-50 border-purple-200 text-purple-600', border: 'hover:border-purple-300 hover:shadow-purple-500/10', tag: 'bg-purple-50/90 text-purple-700 border-purple-200/70' },
+  emerald:{ icon: 'bg-emerald-50 border-emerald-200 text-emerald-600', border: 'hover:border-emerald-300 hover:shadow-emerald-500/10', tag: 'bg-emerald-50/90 text-emerald-700 border-emerald-200/70' },
+  orange: { icon: 'bg-orange-50 border-orange-200 text-orange-600', border: 'hover:border-orange-300 hover:shadow-orange-500/10', tag: 'bg-orange-50/90 text-orange-700 border-orange-200/70' },
+}
 
 function HighlightGrid({
   items,
@@ -162,6 +275,95 @@ export default function WorkshopHighlights() {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+
+        {/* ══════════════════════════════════════════════════════════ */}
+        {/* WHY AI & ROBOTICS MATTERS TODAY */}
+        {/* ══════════════════════════════════════════════════════════ */}
+        <div className="mb-24">
+          {/* Sub-section header */}
+          <div className="mb-12 text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-amber-50/80 px-3.5 py-1 text-xs font-bold text-amber-700 uppercase tracking-widest mb-4 shadow-2xs">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Why It Matters Now
+            </div>
+            <h2
+              id="highlights-heading"
+              className="text-3xl font-black text-slate-900 sm:text-5xl tracking-tight"
+            >
+              AI & Robotics Are{' '}
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Reshaping the World
+              </span>
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-slate-600 font-normal">
+              This isn&apos;t a future technology — it&apos;s happening right now, in hospitals, schools,
+              farms, and factories across India. Understanding it today is no longer optional.
+            </p>
+          </div>
+
+          {/* Impact Stats Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            {impactStats.map((stat) => {
+              const c = statColorMap[stat.color]
+              return (
+                <div
+                  key={stat.label}
+                  className={`rounded-2xl border ${c.border} ${c.bg} p-5 text-center shadow-xs`}
+                >
+                  <p className={`text-3xl sm:text-4xl font-black ${c.val} mb-1`}>{stat.value}</p>
+                  <p className="text-xs font-bold text-slate-700 leading-tight mb-1">{stat.label}</p>
+                  <p className={`text-[10px] font-semibold uppercase tracking-wider ${c.sub} opacity-80`}>{stat.sub}</p>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Why Cards Grid */}
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {whyCards.map((card) => {
+              const Icon = card.icon
+              const c = whyColorMap[card.color]
+              return (
+                <div
+                  key={card.title}
+                  className={`group relative rounded-2xl border border-white/90 bg-white/80 p-6 shadow-sm shadow-slate-200/60 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${c.border}`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${c.icon} shadow-xs`}>
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <span className={`text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md border ${c.tag}`}>
+                      {card.sector}
+                    </span>
+                  </div>
+                  <h3 className="mb-2 text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-600 font-normal">
+                    {card.description}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Call-to-action banner */}
+          <div className="mt-10 rounded-3xl border border-blue-200/80 bg-gradient-to-r from-blue-50/80 via-indigo-50/80 to-purple-50/80 p-6 sm:p-8 text-center backdrop-blur-xl shadow-sm">
+            <p className="text-lg sm:text-xl font-black text-slate-900 mb-2">
+              🚀 The best time to learn about AI & Robotics was yesterday. The second best time is{' '}
+              <span className="text-blue-600">today.</span>
+            </p>
+            <p className="text-sm text-slate-600 font-normal max-w-xl mx-auto">
+              This free workshop gives you the knowledge to understand, discuss, and confidently
+              navigate the most transformative technology of our generation.
+            </p>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════ */}
+        {/* WHAT YOU'LL LEARN */}
+        {/* ══════════════════════════════════════════════════════════ */}
+
         {/* Section Header */}
         <div className="mb-16 text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-blue-50/80 px-3.5 py-1 text-xs font-bold text-blue-700 uppercase tracking-widest mb-4 shadow-2xs">
@@ -169,10 +371,9 @@ export default function WorkshopHighlights() {
             Easy-to-Understand Topics
           </div>
           <h2
-            id="highlights-heading"
             className="text-3xl font-black text-slate-900 sm:text-5xl tracking-tight"
           >
-            What Will You Learn &amp; See?
+            What Will You Learn & See?
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 font-normal">
             We break down the future of technology in simple, everyday words.
