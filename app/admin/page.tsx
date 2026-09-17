@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import AdminDashboard from '@/components/admin/AdminDashboard'
 import { getAdminSession } from '@/app/actions/admin-auth'
+import { getLocalRegistrations } from '@/lib/storage/local-registrations'
 import type { Registration } from '@/lib/types/workshop'
 import type { LogicalDashboardStats } from '@/components/admin/StatsCards'
 
@@ -50,7 +51,7 @@ async function requireAdmin() {
   return { supabase, user: session }
 }
 
-async function fetchRegistrations(
+async function fetchSupabaseRegistrations(
   supabase: Awaited<ReturnType<typeof createClient>>
 ): Promise<Registration[]> {
   try {
@@ -63,7 +64,6 @@ async function fetchRegistrations(
     if (error || !data) return []
 
     return (data as RegistrationRow[]).map((r) => {
-      // Map legacy role if applicant_type not set
       let applicantType: Registration['applicantType'] = 'school_student'
       if (r.applicant_type) {
         applicantType = r.applicant_type as Registration['applicantType']
@@ -106,18 +106,51 @@ async function fetchRegistrations(
   }
 }
 
+async function fetchAllRegistrations(
+  supabase: Awaited<ReturnType<typeof createClient>>
+): Promise<Registration[]> {
+  const [supabaseList, localList] = await Promise.all([
+    fetchSupabaseRegistrations(supabase),
+    getLocalRegistrations(),
+  ])
+
+  // Merge & deduplicate by ID and Email
+  const uniqueMap = new Map<string, Registration>()
+
+  // Add local first
+  localList.forEach((r) => {
+    uniqueMap.set(r.id, r)
+  })
+
+  // Add / overwrite with Supabase records
+  supabaseList.forEach((r) => {
+    uniqueMap.set(r.id, r)
+  })
+
+  // Deduplicate if same email has different IDs between local & supabase
+  const emailMap = new Map<string, Registration>()
+  uniqueMap.forEach((r) => {
+    const key = r.email.toLowerCase().trim()
+    if (!emailMap.has(key)) {
+      emailMap.set(key, r)
+    }
+  })
+
+  const merged = Array.from(emailMap.values())
+  merged.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  return merged
+}
+
 function calculateDashboardStats(registrations: Registration[]): LogicalDashboardStats {
   const totalRegistrations = registrations.length
 
-  // Calculate registrations today (Asia/Kolkata timezone)
   const now = new Date()
-  const todayStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) // YYYY-MM-DD
+  const todayStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
   const todayRegistrations = registrations.filter((r) => {
     const regDate = new Date(r.createdAt).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
     return regDate === todayStr
   }).length
 
-  // Top City
   const cityCounts: Record<string, number> = {}
   registrations.forEach((r) => {
     if (r.city && r.city.trim()) {
@@ -134,7 +167,6 @@ function calculateDashboardStats(registrations: Registration[]): LogicalDashboar
     }
   }
 
-  // Top Discovery Source
   const sourceCounts: Record<string, number> = {}
   registrations.forEach((r) => {
     if (r.hearAboutUs && r.hearAboutUs.trim()) {
@@ -168,7 +200,7 @@ function calculateDashboardStats(registrations: Registration[]): LogicalDashboar
 
 export default async function AdminPage() {
   const { supabase, user } = await requireAdmin()
-  const registrations = await fetchRegistrations(supabase)
+  const registrations = await fetchAllRegistrations(supabase)
   const stats = calculateDashboardStats(registrations)
 
   return (

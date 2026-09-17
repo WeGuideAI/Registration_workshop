@@ -1,8 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { parseSupabaseError } from '@/lib/utils/errors'
 import { getAdminSession } from '@/app/actions/admin-auth'
+import { deleteLocalRegistration } from '@/lib/storage/local-registrations'
 import type { ActionResult } from '@/lib/types/workshop'
 import { revalidatePath } from 'next/cache'
 
@@ -18,17 +18,29 @@ export async function deleteRegistration(
   registrationId: string
 ): Promise<ActionResult<void>> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const supabase: any = await requireAdmin()
-    const { error } = await supabase
-      .from('registrations')
-      .delete()
-      .eq('id', registrationId)
+    // 1. Delete from persistent local storage
+    await deleteLocalRegistration(registrationId)
 
-    if (error) return { success: false, error: parseSupabaseError(error) }
+    // 2. Delete from Supabase if reachable
+    try {
+      const supabase: any = await requireAdmin()
+      await supabase
+        .from('registrations')
+        .delete()
+        .eq('id', registrationId)
+    } catch {
+      // Non-blocking if Supabase is offline
+    }
+
     revalidatePath('/admin')
     return { success: true, data: undefined }
   } catch (err) {
-    return { success: false, error: parseSupabaseError(err) }
+    return {
+      success: false,
+      error: {
+        code: 'UNKNOWN_ERROR',
+        message: 'Could not delete registration. Please try again.',
+      },
+    }
   }
 }
